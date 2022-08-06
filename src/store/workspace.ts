@@ -16,6 +16,12 @@ export const useWorkspaceStore = defineStore('workspace', {
     getters: {
         hasShortcut: (state: State) => state.shortcuts.length > 0,
         focused: (state: State) => state.focusedShortcut,
+        focusedDeleted: (state: State) => {
+            if (!state.focusedShortcut) {
+                return false
+            }
+            return state.shortcuts.filter(shortcut => shortcut._id === state.focusedShortcut?._id).length === 0
+        }
     },
     actions: {
         setShortcuts(shortcuts: IShortcut[]) {

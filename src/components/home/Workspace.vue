@@ -41,6 +41,7 @@
 
 <script lang="ts" setup>
 import ListShortCut from "../ListShortCut.vue"
+
 </script>
 <script lang="ts">
 import {defineComponent} from "vue"
