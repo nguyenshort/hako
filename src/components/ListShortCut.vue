@@ -12,7 +12,7 @@
         </svg>
       </div>
 
-      <p class="text-sm font-medium ml-1">Add App</p>
+      <p class="text-xs font-medium ml-1">Add App</p>
 
     </div>
 
@@ -34,7 +34,7 @@
         <svg width="16px" height="16px" xmlns="http://www.w3.org/2000/svg" class="fill-current" viewBox="0 0 512 512">
           <path d="M256 464c114.87 0 208-93.13 208-208S370.87 48 256 48 48 141.13 48 256s93.13 208 208 208zm-91.36-212.65a16 16 0 0122.63-.09L240 303.58V170a16 16 0 0132 0v133.58l52.73-52.32A16 16 0 11347.27 274l-80 79.39a16 16 0 01-22.54 0l-80-79.39a16 16 0 01-.09-22.65z"/>
         </svg>
-        <p class="text-sm font-medium ml-1">
+        <p class="text-xs font-medium ml-1">
           {{ app.name }}
         </p>
       </div>
@@ -56,12 +56,12 @@
 import {useEmitter} from "@nguyenshort/vue3-mitt"
 import {computed, reactive} from "vue";
 import {useWindowSize} from "@vueuse/core";
-import {IShortcut} from "@shared/interface/shortcut";
+import {ICreateShortcut} from "@shared/interface/shortcut";
 
 const { ipcRenderer } = window
 const emitter = useEmitter()
 
-const apps = reactive<Omit<IShortcut, 'id'>[]>([
+const apps = reactive<ICreateShortcut[]>([
   {
     name: "Google",
     icon: "/images/google.png",
@@ -72,11 +72,11 @@ const apps = reactive<Omit<IShortcut, 'id'>[]>([
     icon: "/images/youtube.png",
     url: "https://youtube.com"
   },
-/*  {
+ {
     name: "Facebook",
     icon: "/images/facebook.png",
     url: "https://facebook.com"
-  },*/
+  },
   {
     name: "Twitter",
     icon: "/images/twitter.png",
@@ -94,12 +94,13 @@ const apps = reactive<Omit<IShortcut, 'id'>[]>([
   }
 ])
 
-const clickShortcutHandle = async (app: IShortcut) => {
+const clickShortcutHandle = async (app: ICreateShortcut) => {
   try {
-    await ipcRenderer.createShortcut(app)
+    await ipcRenderer.createShortcut(Object.assign({}, app))
     emitter.emit('refresh-shortcuts')
     await ipcRenderer.showNotification('Success', 'Shortcut created')
   } catch (e) {
+    console.log(e)
     // Todo: Error
   }
 }

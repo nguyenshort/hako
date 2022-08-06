@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     // Các event liên quan tới shortcut
     createShortcut: (shortcut: Omit<IShortcut, 'id'>) => ipcRenderer.invoke('create-shortcut', shortcut),
     getShortcuts: () => ipcRenderer.invoke('gets-shortcut'),
+    removeShortcut: (id: string) => ipcRenderer.invoke('remove-shortcut', id),
 
 
     // Thông báo

@@ -5,6 +5,7 @@ export interface ipcRendererAPI {
 
     createShortcut: (shortcut: any) => Promise<void>,
     getShortcuts: () => Promise<any[]>,
+    removeShortcut: (id: string) => Promise<void>,
 }
 
 declare global {

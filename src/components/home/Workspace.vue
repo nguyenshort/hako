@@ -1,5 +1,5 @@
 <template>
-  <div class="px-5 pt-7 pb-4">
+  <div class="px-3 pt-7 pb-4">
 
     <div class="flex items-center mt-3">
       <div>
@@ -28,9 +28,11 @@
 
     <list-short-cut class="mt-4" />
 
-    <div class="fixed bottom-0 left-0">
-      <div class="text-xs px-5 pb-4">
-        © Hako Inc
+    <div class="fixed bottom-0 left-0 right-0">
+      <div class="flex justify-end">
+        <div class="text-xs px-3 pb-3">
+          © Hako Inc
+        </div>
       </div>
     </div>
 

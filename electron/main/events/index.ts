@@ -1,7 +1,7 @@
 import {ipcMain, Notification} from 'electron'
-import {IShortcut} from "../../../shared/interface/shortcut";
+import {ICreateShortcut} from "@shared/interface/shortcut";
 import {IHakoDatabase} from "../database";
-import {createShortcutHandle, responseShortcutsHandle} from "./shortcut.event";
+import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle} from "./shortcut.event";
 
 export const eventsRegister = (db: IHakoDatabase) => {
 
@@ -12,6 +12,7 @@ export const eventsRegister = (db: IHakoDatabase) => {
     /**
      * Các handle liên quan tới shortcut
      */
-    ipcMain.handle('create-shortcut', async (_, args: Omit<IShortcut, 'id'>) => createShortcutHandle(db.shortcuts, args))
-    ipcMain.handle('gets-shortcut', async () => responseShortcutsHandle(db.shortcuts))
+    ipcMain.handle('create-shortcut', async (_, args: ICreateShortcut) => createShortcutHandle(db.shortcuts, args))
+    ipcMain.handle('gets-shortcut', async () => getShortcutsHandle(db.shortcuts))
+    ipcMain.handle('remove-shortcut', async (_, id: string) => removeShortcutsHandle(db.shortcuts, id))
 }
