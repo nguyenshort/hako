@@ -11,4 +11,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // Thông báo
     showNotification: (title: string, message: string) => ipcRenderer.invoke('show-notification', title, message),
+
+    // universal
+    initUniversalView: (args: any) => ipcRenderer.invoke('init-universal-view', args)
 })

@@ -11,6 +11,7 @@
     "baseUrl": "./",
     "strict": true,
     "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true,
     "paths": {
       "@components/*": [

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain, session } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, session, protocol } from 'electron'
 import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
@@ -92,7 +92,12 @@ const vueDevToolsPath = path.join(
     homedir(),
     '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.2.1_0'
 )
+
+const PROTOCOL_PREFIX = 'hakox'
 app.whenReady().then(async () => {
+  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (req, cb) => {
+    console.log('HTTP request', req.url)
+  })
   await createWindow()
   await session.defaultSession.loadExtension(vueDevToolsPath)
 })
