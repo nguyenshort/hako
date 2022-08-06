@@ -1,5 +1,5 @@
 <template>
-  <div class="px-3 pt-7 pb-4">
+  <div class="px-3 pb-4 pt-2">
 
     <div class="flex items-center mt-3">
       <div>

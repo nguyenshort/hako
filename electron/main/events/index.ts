@@ -1,8 +1,7 @@
 import {ipcMain, Notification} from 'electron'
-import {ICreateShortcut} from "@shared/interface/shortcut";
-import {IHakoDatabase} from "../database";
-import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle} from "./shortcut.event";
-import {initUniversalViewHandle} from "./universal.event";
+import {ICreateShortcut} from "@shared/interface/shortcut"
+import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle} from "./shortcut.event"
+import {initUniversalViewHandle} from "./universal.event"
 
 export const eventsRegister = () => {
 
