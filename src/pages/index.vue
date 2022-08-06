@@ -16,14 +16,28 @@
         <div
             v-for="(item, index) in workspaceStore.shortcuts"
             :key="item"
-            class="absolute top-0 left-0 w-full h-full"
+            class="view-wrapper"
+            :class="{
+              '_active': workspaceStore.focused?._id === item._id && !workspaceStore.focusedDeleted && !workspaceStore.workspaceEnable
+            }"
         >
           <universal-view :shortcut="item" />
         </div>
 
-        <workspace ref="workRef" class="top-0 left-0 w-full absolute h-full" />
+        <workspace
+            ref="workRef"
+            class="view-wrapper"
+            :class="{
+              '_active': workspaceStore.workspaceEnable
+            }"
+        />
 
-        <div class="top-0 left-0 w-full absolute h-full">
+        <div
+            class="view-wrapper"
+            :class="{
+              '_active': workspaceStore.focusedDeleted
+            }"
+        >
           <app-deleted />
         </div>
 
@@ -46,4 +60,12 @@ const workspaceStore = useWorkspaceStore()
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.view-wrapper {
+  @apply absolute top-0 left-0 w-full h-full transition opacity-0 duration-300 ease-in-out z-10 invisible transform scale-95
+}
+
+.view-wrapper._active {
+  @apply opacity-100 visible scale-100
+}
+</style>

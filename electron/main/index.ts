@@ -56,6 +56,7 @@ async function createWindow() {
     transparent : true,
     titleBarStyle : 'hiddenInset',
     webPreferences: {
+      spellcheck: false,
       preload,
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // Consider using contextBridge.exposeInMainWorld
