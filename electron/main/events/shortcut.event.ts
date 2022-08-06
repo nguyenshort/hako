@@ -1,7 +1,7 @@
-import {IShortcut} from "../interface/shortcut"
+import {IShortcut} from "@shared/interface/shortcut"
 import type Nedb from "@seald-io/nedb"
 
-export const createShortcutHandle = async (db: Nedb, shortcut: IShortcut) => {
+export const createShortcutHandle = async (db: Nedb, shortcut: Omit<IShortcut, 'id'>) => {
     console.log("Creating shortcut...", shortcut.name)
     try {
         await db.insertAsync(shortcut)

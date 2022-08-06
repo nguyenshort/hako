@@ -1,6 +1,6 @@
 <template>
 
-  <div class="flex flex-wrap justify-evenly">
+  <div id="list-app" class="flex flex-wrap justify-evenly overflow-y-auto scrollbar-hide">
 
     <div class="w-[110px] item">
 
@@ -43,7 +43,7 @@
 
     <!--Fix size-->
     <div
-        v-for="index in 5"
+        v-for="index in 30"
         :key="index"
         class="w-[110px] item"
     ></div>
@@ -54,12 +54,14 @@
 
 <script lang="ts" setup>
 import {useEmitter} from "@nguyenshort/vue3-mitt"
-import {reactive} from "vue";
+import {computed, reactive} from "vue";
+import {useWindowSize} from "@vueuse/core";
+import {IShortcut} from "@shared/interface/shortcut";
 
 const { ipcRenderer } = window
 const emitter = useEmitter()
 
-const apps = reactive([
+const apps = reactive<Omit<IShortcut, 'id'>[]>([
   {
     name: "Google",
     icon: "/images/google.png",
@@ -92,15 +94,24 @@ const apps = reactive([
   }
 ])
 
-const clickShortcutHandle = async (app: any) => {
+const clickShortcutHandle = async (app: IShortcut) => {
   try {
-    await ipcRenderer.createShortcut({name: 'Facebook', url: 'https://www.facebook.com'})
+    await ipcRenderer.createShortcut(app)
     emitter.emit('refresh-shortcuts')
     await ipcRenderer.showNotification('Success', 'Shortcut created')
   } catch (e) {
     // Todo: Error
   }
 }
+
+const { height: heightWindow } = useWindowSize()
+const height = computed(() => {
+  if(window.innerHeight <= 0) {
+    return '0px'
+  }
+  // 35 bottom + 35 bottom + ~ 40 space
+  return `${heightWindow.value - 35 - 35 - 40 - 40 - 10}px`
+})
 </script>
 
 <script lang="ts">
@@ -114,5 +125,9 @@ export default defineComponent({
 <style scoped>
 .item {
   @apply aspect-1 overflow-hidden flex flex-col justify-center items-center cursor-pointer mb-2
+}
+
+#list-app {
+  height: v-bind(height);
 }
 </style>

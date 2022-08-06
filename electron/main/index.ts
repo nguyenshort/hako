@@ -1,8 +1,9 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
-import { release } from 'os'
+import { app, BrowserWindow, shell, ipcMain, session } from 'electron'
+import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
 import db from "./database";
+import * as path from "path";
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
@@ -83,7 +84,17 @@ async function createWindow() {
   })
 }
 
-app.whenReady().then(createWindow)
+/**
+ * @link https://www.electronjs.org/docs/latest/tutorial/devtools-extension
+ */
+const vueDevToolsPath = path.join(
+    homedir(),
+    '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.2.1_0'
+)
+app.whenReady().then(async () => {
+  await createWindow()
+  await session.defaultSession.loadExtension(vueDevToolsPath)
+})
 
 app.on('window-all-closed', () => {
   win = null

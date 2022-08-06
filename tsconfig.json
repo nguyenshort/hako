@@ -14,10 +14,10 @@
     "skipLibCheck": true,
     "paths": {
       "@components/*": [
-        "../src/components/*"
+        "./src/components/*"
       ],
-      "@layouts/*": [
-        "./src/layouts/*"
+      "@pages/*": [
+        "./src/pages/*"
       ],
       "@store/*": [
         "./src/store/*"
@@ -28,23 +28,11 @@
       "@composables/*": [
         "./src/composables/*"
       ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
-      "#apollo/*": [
-        "./src/apollo/*"
-      ],
-      "#smileeye/*": [
-        "./src/apollo/smileeye/*"
-      ],
-      "#notify/*": [
-        "./src/apollo/notify/*"
+      "@shared/*": [
+        "./shared/*"
       ],
       "#types/*": [
         "./src/types/*"
-      ],
-      "#schema/*": [
-        "./__generated__/*"
       ]
     }
   },

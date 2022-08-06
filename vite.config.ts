@@ -10,6 +10,16 @@ rmSync('dist', { recursive: true, force: true }) // v14.14.0
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@components': join(__dirname, './src/components'),
+      '@composables': join(__dirname, './src/composables'),
+      '@pages': join(__dirname, './src/pages'),
+      '@store': join(__dirname, './src/store'),
+      '@plugins': join(__dirname, './src/plugins'),
+      '@shared': join(__dirname, './shared'),
+    }
+  },
   plugins: [
     vue(),
     electron({

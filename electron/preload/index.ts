@@ -1,10 +1,10 @@
 import {ipcRenderer, contextBridge} from "electron"
-import {IShortcut} from "../main/interface/shortcut";
+import {IShortcut} from "@shared/interface/shortcut";
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // Các event liên quan tới shortcut
-    createShortcut: (shortcut: IShortcut) => ipcRenderer.invoke('create-shortcut', shortcut),
+    createShortcut: (shortcut: Omit<IShortcut, 'id'>) => ipcRenderer.invoke('create-shortcut', shortcut),
     getShortcuts: () => ipcRenderer.invoke('gets-shortcut'),
 
 
