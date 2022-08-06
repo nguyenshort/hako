@@ -1,28 +1,31 @@
 import {ICreateShortcut} from "@shared/interface/shortcut"
-import type Nedb from "@seald-io/nedb"
+import {useDatabase} from "../composables";
 
-export const createShortcutHandle = async (db: Nedb, shortcut: ICreateShortcut) => {
+export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     console.log("Creating shortcut...", shortcut.name)
+    const db = useDatabase()
     try {
-        await db.insertAsync(shortcut)
+        await db.shortcuts.insertAsync(shortcut)
     } catch (e) {
         console.log('Error creating shortcut', e)
     }
 }
 
-export const getShortcutsHandle = async (db: Nedb) => {
+export const getShortcutsHandle = async () => {
     try {
-        return await db.findAsync({})
+        const dbs = useDatabase()
+        return await dbs.shortcuts.findAsync({})
             .sort({order: 1})
     } catch (e) {
         console.log('Error getting shortcuts', e)
     }
 }
 
-export const removeShortcutsHandle = async (db: Nedb, id: string) => {
+export const removeShortcutsHandle = async (id: string) => {
     try {
+        const dbs = useDatabase()
         console.log("Removing shortcut...", id)
-        return await db.removeAsync({ _id: id }, { multi: false })
+        return await dbs.shortcuts.removeAsync({ _id: id }, { multi: false })
     } catch (e) {
         console.log('Error getting shortcuts', e)
     }

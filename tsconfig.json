@@ -12,6 +12,7 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "paths": {
       "@components/*": [

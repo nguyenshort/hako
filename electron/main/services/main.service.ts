@@ -13,6 +13,9 @@ const preload = join(__dirname, '../preload/index.js')
 
 @injectable()
 export class MainService {
+
+    static key: symbol = Symbol.for('MainWindow')
+
     #win?: Electron.BrowserWindow
 
     constructor() {

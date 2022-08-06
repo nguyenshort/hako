@@ -1,11 +1,13 @@
+import "reflect-metadata"
 import { app, BrowserWindow, shell, ipcMain, session, protocol } from 'electron'
 import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
 import db from "./database";
-import * as path from "path";
-
-process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+import * as path from "path"
+import container from './services'
+import {DatabaseService} from "./services/database";
+import {useDatabase} from "./composables";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -21,7 +23,7 @@ if (!app.requestSingleInstanceLock()) {
 // Remove electron security warnings
 // This warning only shows in development mode
 // Read more on https://www.electronjs.org/docs/latest/tutorial/security
-// process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
 export const ROOT_PATH = {
   // /dist
@@ -29,6 +31,9 @@ export const ROOT_PATH = {
   // /dist or /public
   public: join(__dirname, app.isPackaged ? '../..' : '../../../public'),
 }
+
+
+const databaseService = useDatabase()
 
 let win: BrowserWindow | null = null
 // Here, you can also use other preload
@@ -40,6 +45,12 @@ const indexHtml = join(ROOT_PATH.dist, 'index.html')
 async function createWindow() {
 
   try {
+    await databaseService.init()
+  } catch (e) {
+    app.exit(0)
+  }
+
+  try {
     await db.user.loadDatabaseAsync()
     await db.shortcuts.loadDatabaseAsync()
     console.log('Database loaded')
@@ -47,7 +58,7 @@ async function createWindow() {
     console.log('Error loading database', e)
   }
 
-  eventsRegister(db)
+  eventsRegister()
 
   win = new BrowserWindow({
     title: 'Main window',
