@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "jsx": "preserve",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "baseUrl": "./",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@components/*": [
+        "../src/components/*"
+      ],
+      "@layouts/*": [
+        "./src/layouts/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@plugins/*": [
+        "./src/plugins/*"
+      ],
+      "@composables/*": [
+        "./src/composables/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "#apollo/*": [
+        "./src/apollo/*"
+      ],
+      "#smileeye/*": [
+        "./src/apollo/smileeye/*"
+      ],
+      "#notify/*": [
+        "./src/apollo/notify/*"
+      ],
+      "#types/*": [
+        "./src/types/*"
+      ],
+      "#schema/*": [
+        "./__generated__/*"
+      ]
+    }
+  },
+  "references": [
+    { "path": "./tsconfig.node.json" }
+  ]
+}

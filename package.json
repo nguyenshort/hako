@@ -1,0 +1,50 @@
+{
+  "name": "hako",
+  "version": "2.0.0",
+  "main": "dist/electron/main/index.js",
+  "description": "Really simple Electron + Vue + Vite boilerplate.",
+  "author": "草鞋没号 <308487730@qq.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build && electron-builder"
+  },
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.0.1",
+    "autoprefixer": "^10.4.8",
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.8",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.3",
+    "vite-plugin-electron": "^0.8.1",
+    "vue": "^3.2.37",
+    "vue-tsc": "^0.39.4"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 3344
+  },
+  "keywords": [
+    "electron",
+    "rollup",
+    "vite",
+    "vue3",
+    "vue"
+  ],
+  "dependencies": {
+    "@nguyenshort/vue3-mitt": "^0.0.4",
+    "@seald-io/nedb": "^3.0.0",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@types/animejs": "^3.1.5",
+    "@vueuse/core": "^9.1.0",
+    "animejs": "^3.2.1",
+    "vite-tsconfig-paths": "^3.5.0",
+    "vue-router": "^4.1.3"
+  }
+}
