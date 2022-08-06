@@ -9,13 +9,16 @@
         <div
             v-for="(item, index) in workspaceStore.shortcuts"
             :key="item._id"
-            class="ws-item"
-            @click="removeShortcut(item)"
+            class="ws-item transition transform duration-300 ease-in-out"
+            :class="{
+               'opacity-50': !(workspaceStore.focused?._id === item._id),
+            }"
+            @click="changeFocused(item)"
         >
           <div>
             <img
                 :src="item.icon"
-                class="w-8"
+                class="w-8 transform duration-300 ease-in-out transition hover:scale-125"
                 alt=""
             />
           </div>
@@ -83,6 +86,10 @@ import {useColorMode, useWindowSize} from "@vueuse/core";
 import {computed, watch} from "vue";
 
 const workspaceStore = useWorkspaceStore()
+
+const changeFocused = (shortcut: IShortcut) => {
+  workspaceStore.setFocusedShortcut(shortcut)
+}
 
 const removeShortcut = async (shortcut: IShortcut) => {
   try {
