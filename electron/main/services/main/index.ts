@@ -9,18 +9,14 @@ export class MainService {
 
     static key: symbol = Symbol.for('MainService')
 
-    #win?: Electron.BrowserWindow
+    win?: Electron.BrowserWindow
 
     constructor() {
         this.#init()
     }
 
     #init() {}
-
-    #createMainWindow() {
-        const preload = join(__dirname, '../preload/index.js')
-        const iconPath = join(__dirname, app.isPackaged ? '../..' : '../../../public')
-
+    async createMainWindow(preload: string) {
         const mainWindowState = windowStateKeeper({
             defaultWidth: 1024,
             defaultHeight: 768,
@@ -28,12 +24,9 @@ export class MainService {
 
         const options: Electron.BrowserWindowConstructorOptions = {
             title: 'Main window',
-            icon: join(iconPath, 'favicon.ico'),
+            icon: join(ROOT_PATH.public, 'favicon.ico'),
             width: mainWindowState.width,
             height: mainWindowState.height,
-            titleBarOverlay: {
-                height: 28, // 30px - 2px safety boundary to ensure buttons don't get taller than title bar
-            },
             transparent : true,
             titleBarStyle : 'hiddenInset',
             webPreferences: {
@@ -46,9 +39,9 @@ export class MainService {
             },
         }
 
-        this.#win = new BrowserWindow(options)
+        this.win = new BrowserWindow(options)
 
-        if(!this.#win) {
+        if(!this.win) {
             app.exit(0)
             return
         }
@@ -56,20 +49,20 @@ export class MainService {
         const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
         const indexHtml = join(ROOT_PATH.dist, 'index.html')
         if (app.isPackaged) {
-            this.#win.loadFile(indexHtml)
+            await this.win.loadFile(indexHtml)
         } else {
-            this.#win.loadURL(url)
+            await this.win.loadURL(url)
             // Open devTool if the app is not packaged
             // win.webContents.openDevTools()
         }
 
         // Test actively push message to the Electron-Renderer
-        this.#win.webContents.on('did-finish-load', () => {
-            this.#win?.webContents.send('main-process-message', new Date().toLocaleString())
+        this.win.webContents.on('did-finish-load', () => {
+            this.win?.webContents.send('main-process-message', new Date().toLocaleString())
         })
 
         // Make all links open with the browser, not with the application
-        this.#win.webContents.setWindowOpenHandler(({ url }) => {
+        this.win.webContents.setWindowOpenHandler(({ url }) => {
             if (url.startsWith('https:')) shell.openExternal(url)
             return { action: 'deny' }
         })

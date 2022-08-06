@@ -1,13 +1,10 @@
 import "reflect-metadata"
-import { app, BrowserWindow, shell, ipcMain, session, protocol } from 'electron'
+import { app, BrowserWindow, ipcMain, session, protocol } from 'electron'
 import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
-import db from "./database";
 import * as path from "path"
-import container from './services'
-import {DatabaseService} from "./services/database";
-import {useDatabase} from "./composables";
+import {useDatabase, useMainService} from "./composables";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -34,13 +31,14 @@ export const ROOT_PATH = {
 
 
 const databaseService = useDatabase()
+const mainService = useMainService()
 
-let win: BrowserWindow | null = null
+
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
-const indexHtml = join(ROOT_PATH.dist, 'index.html')
+// const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
+// const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
 async function createWindow() {
 
@@ -50,50 +48,9 @@ async function createWindow() {
     app.exit(0)
   }
 
-  try {
-    await db.user.loadDatabaseAsync()
-    await db.shortcuts.loadDatabaseAsync()
-    console.log('Database loaded')
-  } catch (e) {
-    console.log('Error loading database', e)
-  }
-
   eventsRegister()
 
-  win = new BrowserWindow({
-    title: 'Main window',
-    icon: join(ROOT_PATH.public, 'favicon.ico'),
-    frame: false,
-    transparent : true,
-    titleBarStyle : 'hiddenInset',
-    webPreferences: {
-      spellcheck: false,
-      preload,
-      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
-      // Consider using contextBridge.exposeInMainWorld
-      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
-      nodeIntegration: true
-    },
-  })
-
-  if (app.isPackaged) {
-    win.loadFile(indexHtml)
-  } else {
-    win.loadURL(url)
-    // Open devTool if the app is not packaged
-    // win.webContents.openDevTools()
-  }
-
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
-
-  // Make all links open with the browser, not with the application
-  win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url)
-    return { action: 'deny' }
-  })
+  await mainService.createMainWindow(preload)
 }
 
 /**
@@ -114,24 +71,24 @@ app.whenReady().then(async () => {
 })
 
 app.on('window-all-closed', () => {
-  win = null
+  mainService.win = undefined
   if (process.platform !== 'darwin') app.quit()
 })
 
 app.on('second-instance', () => {
-  if (win) {
+  if (mainService.win) {
     // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore()
-    win.focus()
+    if (mainService.win.isMinimized()) mainService.win.restore()
+    mainService.win.focus()
   }
 })
 
-app.on('activate', () => {
+app.on('activate', async () => {
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
     allWindows[0].focus()
   } else {
-    createWindow()
+    await createWindow()
   }
 })
 
@@ -143,10 +100,10 @@ ipcMain.handle('open-win', (event, arg) => {
     },
   })
 
-  if (app.isPackaged) {
+/*  if (app.isPackaged) {
     childWindow.loadFile(indexHtml, { hash: arg })
   } else {
     childWindow.loadURL(`${url}/#${arg}`)
     // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
-  }
+  }*/
 })
