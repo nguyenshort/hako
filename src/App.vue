@@ -4,6 +4,7 @@
       <router-view />
     </div>
   </div>
+  <setting-modal />
   <app-loading v-if="showPloading" />
 </template>
 
@@ -13,6 +14,7 @@ import {onMounted, ref} from "vue";
 import AppLoading from "./components/includes/AppLoading.vue"
 import {useEmitter} from "@nguyenshort/vue3-mitt"
 import {useWorkspaceStore} from "@store/workspace";
+import SettingModal from "@components/includes/SettingModal.vue";
 
 // Store
 const workspaceStore = useWorkspaceStore()

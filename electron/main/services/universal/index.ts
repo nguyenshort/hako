@@ -85,6 +85,20 @@ export class UniversalService {
             // Không có view này
             return
         }
-        view.webContents.focus()
+        this.mainService.win.setTopBrowserView(view)
+    }
+
+    async removeView(_id: string) {
+        console.log('Remove view:', _id)
+        if(!this.mainService.win) {
+            return
+        }
+        const view = this.views[_id]
+        if(!view) {
+            // Không có view này
+            return
+        }
+        this.mainService.win.removeBrowserView(view)
+        delete this.views[_id]
     }
 }
