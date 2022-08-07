@@ -5,8 +5,6 @@ import { join } from 'path'
 import {eventsRegister} from "./events";
 import * as path from "path"
 import {useDatabase, useMainService} from "./composables";
-import {Deeplink} from "electron-deeplink"
-import isDev from 'electron-is-dev'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -64,19 +62,7 @@ const vueDevToolsPath = path.join(
 
 app.whenReady().then(async () => {
   await createWindow()
-  await session.defaultSession.loadExtension(vueDevToolsPath)
-
-  const deeplink = new Deeplink({
-    app,
-    mainWindow: mainService.win!,
-    protocol: 'hako-x',
-    isDev: isDev
-  })
-
-
-  deeplink.on('received', (link) => {
-    console.log('deep link received', link)
-  });
+  await mainService.baseView?.webContents.session.loadExtension(vueDevToolsPath)
 })
 
 app.on('window-all-closed', () => {

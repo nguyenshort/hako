@@ -1,5 +1,6 @@
 import {ipcRenderer, contextBridge} from "electron"
-import {IShortcut} from "@shared/interface/shortcut";
+import {ICallback, IShortcut} from "@shared/interface/shortcut"
+
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
 
@@ -10,6 +11,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // Base View
     toggleBaseView: (visiable: boolean) => ipcRenderer.invoke('toggle-base-view', visiable),
+    useEvent: (event: string, callback: ICallback) => ipcRenderer.on(event, (event, data) => callback(data)),
 
 
     // Thông báo

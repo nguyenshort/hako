@@ -7,3 +7,5 @@ export interface IShortcut {
 }
 
 export type ICreateShortcut = Pick<IShortcut, 'name' | 'icon' | 'url'>
+
+export type ICallback = (...args: any[]) => void|Promise<void>

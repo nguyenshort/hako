@@ -72,6 +72,7 @@ export class UniversalService {
         await view.webContents.loadURL(shortcut.url)
 
         this.views[shortcut._id] = view
+        await this.mainService.notifyToBaseView('injected-universal-view', shortcut._id)
         console.log('Injected view:', shortcut.name)
     }
 

@@ -86,7 +86,7 @@ export class MainService {
         } else {
             await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
-            // win.webContents.openDevTools()
+            view.webContents.openDevTools()
         }
 
         view.webContents.on('did-finish-load', () => {
@@ -104,7 +104,6 @@ export class MainService {
     }
 
     async toggleBaseView(visible: boolean) {
-
         if(!this.baseView) {
             await this.injectBaseView()
             await this.toggleBaseView(visible)
@@ -114,5 +113,10 @@ export class MainService {
         if(visible) {
            this.win?.setTopBrowserView(this.baseView)
         }
+    }
+
+    async notifyToBaseView(event: string, data: any) {
+        this.win?.emit(event, data)
+        this.baseView?.webContents.send(event, data)
     }
 }
