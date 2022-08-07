@@ -50,7 +50,7 @@
 <script lang="ts" setup>
 import Workspace from "@components/home/Workspace.vue"
 import UniversalView from "../components/home/UniversalView.vue"
-import HomeNavigation from "@components/home/HomeNavigation.vue"
+import HomeNavigation from "@components/navigation/HomeNavigation.vue"
 
 import {useWorkspaceStore} from "@store/workspace"
 import AppDeleted from "@components/includes/AppDeleted.vue"
@@ -61,11 +61,12 @@ const workspaceStore = useWorkspaceStore()
 
 // Sự kiện phát ra khi có view mới dc tiêm vào
 const listenUniversalInjected = () => {
-  window.ipcRenderer.useEvent('injected-universal-view', (_id: string) => {
-    const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
-    if(!shortcut) return
-    workspaceStore.setFocusedShortcut(shortcut)
-  })
+  // window.ipcRenderer.useEvent('injected-universal-view', (_id: string) => {
+  //   console.log('Injected:', _id)
+  //   const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
+  //   if(!shortcut) return
+  //   workspaceStore.setFocusedShortcut(shortcut)
+  // })
 }
 
 onMounted(() => nextTick( () => listenUniversalInjected()))

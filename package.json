@@ -63,8 +63,11 @@
     "inversify": "^6.0.1",
     "pinia": "^2.0.17",
     "reflect-metadata": "^0.1.13",
+    "sass": "^1.54.3",
+    "sass-loader": "^13.0.2",
     "tailwind-scrollbar-hide": "^1.1.7",
     "user-agents": "^1.0.1099",
+    "vant": "^3.5.4",
     "vite-tsconfig-paths": "^3.5.0",
     "vue-router": "^4.1.3"
   }
