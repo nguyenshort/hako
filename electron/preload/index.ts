@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     createShortcut: (shortcut: Omit<IShortcut, 'id'>) => ipcRenderer.invoke('create-shortcut', shortcut),
     getShortcuts: () => ipcRenderer.invoke('gets-shortcut'),
     removeShortcut: (id: string) => ipcRenderer.invoke('remove-shortcut', id),
+    openShortcutContext: (id: string) => ipcRenderer.invoke('open-shortcut-context', id),
 
     // Base View
     toggleBaseView: (visiable: boolean) => ipcRenderer.invoke('toggle-base-view', visiable),

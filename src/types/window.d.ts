@@ -7,6 +7,7 @@ export interface ipcRendererAPI {
     createShortcut: (shortcut: any) => Promise<void>,
     getShortcuts: () => Promise<any[]>,
     removeShortcut: (id: string) => Promise<void>,
+    openShortcutContext: (id: string) => Promise<void>,
 
     toggleBaseView: (visiable: boolean) => Promise<void>,
     useEvent: (event: string, callback: ICallback) => void,

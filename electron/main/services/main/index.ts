@@ -115,7 +115,7 @@ export class MainService {
         }
     }
 
-    async notifyToBaseView(event: string, data: any) {
+    notifyToBaseView(event: string, data: any) {
         this.win?.emit(event, data)
         this.baseView?.webContents.send(event, data)
     }

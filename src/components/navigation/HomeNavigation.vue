@@ -6,8 +6,6 @@
 
     <div id="list-actions" class="overflow-y-auto scrollbar-hide">
       <div>
-
-
         <ws-item
             v-for="(item, index) in workspaceStore.shortcuts"
             :key="item._id"
@@ -15,6 +13,7 @@
             :disbale="!(workspaceStore.focused?._id === item._id)"
             :hotkey="`⌘${index + 1}`"
             @click="changeFocused(item)"
+            @contextmenu.prevent="showWsOptions(item)"
         ></ws-item>
 
         <ws-item
@@ -66,7 +65,7 @@
 import {useWorkspaceStore} from "@store/workspace";
 import {IShortcut} from "@shared/interface/shortcut";
 import {useColorMode, useWindowSize} from "@vueuse/core";
-import {computed, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
 
 const workspaceStore = useWorkspaceStore()
@@ -107,6 +106,10 @@ const toggleColorMode = () => {
 const openWorkspace = () => {
   workspaceStore.setWorkspaceEnable(true)
   window.ipcRenderer.toggleBaseView(true)
+}
+
+const showWsOptions = (shortcut: IShortcut) => {
+  window.ipcRenderer.openShortcutContext(shortcut._id)
 }
 
 </script>
