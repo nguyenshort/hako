@@ -1,8 +1,8 @@
 <template>
-  <div id="navigation" class="w-0 transform relative min-h-screen">
+  <div id="navigation" class="w-0 transform relative min-h-screen flex flex-col">
 
     <!-- fix scrollbar -->
-    <div ref="fixRef">
+    <div ref="fixRef" class="flex-shrink-0">
       <div class="h-5"></div>
       <ws-item
           :disbale="false"
@@ -21,25 +21,27 @@
     <div
         id="list-actions"
         ref="actionsRef"
-        class="overflow-y-auto scrollbar-hide"
+        class="overflow-y-auto scrollbar-hide h-auto"
         :style="{ height }"
     >
-      <div>
-
-        <ws-item
-            v-for="(item, index) in workspaceStore.shortcuts"
-            :key="item._id"
-            :item="item"
-            :disbale="!(workspaceStore.focused?._id === item._id)"
-            :hotkey="`⌘${index + 1}`"
-            @click="changeFocused(item)"
-            @contextmenu.prevent="showWsOptions(item)"
-        ></ws-item>
-      </div>
-      <div v-for="index in 3" :key="index" class="ws-item _fake"></div>
+      <ws-item
+          v-for="(item, index) in workspaceStore.shortcuts"
+          :key="item._id"
+          :item="item"
+          :hotkey="`⌘${index + 1}`"
+          :class="{
+            _active: workspaceStore.focused?._id === item._id,
+            'opacity-75': !(workspaceStore.focused?._id === item._id)
+          }"
+          @click="changeFocused(item)"
+          @contextmenu.prevent="showWsOptions(item)"
+      ></ws-item>
+      <div class="h-10"></div>
     </div>
 
-    <div ref="fixMenuRef" class="absolute bottom-0 right-0 left-0 _fix pb-3 bg-slate-900">
+    <div ref="fixMenuRef" class="flex-shrink-0">
+
+      <div class="h-6"></div>
 
       <ws-item @click="toggleColorMode">
         <svg v-if="mode === 'light'" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94"/><circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></svg>
@@ -57,9 +59,11 @@
         </div>
       </div>
 
+      <div class="h-3"></div>
+
     </div>
 
-    <div class="absolute top-0 bottom-0 right-0 w-px bg-slate-800"></div>
+    <div class="absolute top-0 bottom-0 right-0 w-px dark:bg-slate-800 bg-slate-200"></div>
 
   </div>
 </template>
@@ -158,12 +162,16 @@ export default defineComponent({
   }
 
   .ws-item {
-    @apply w-full aspect-1 flex justify-center items-center relative before:absolute before:top-0 before:h-px before:left-3 before:right-3 before:bg-slate-800 cursor-pointer
+    @apply w-full aspect-1 flex justify-center items-center relative cursor-pointer
+  }
+  .ws-item {
+    @apply before:absolute before:top-0 before:h-px before:left-0 dark:before:left-3 before:right-0 dark:before:right-3 before:bg-slate-200 dark:before:bg-slate-800
   }
 
   .ws-item {
-    &._fake:before {
-      display: none;
+
+    &._active {
+      @apply bg-primary-100 dark:bg-slate-800 after:absolute after:left-0 after:top-0 after:bottom-0 after:border-l-4 after:border-primary-600
     }
 
     >.badge {

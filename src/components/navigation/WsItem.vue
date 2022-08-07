@@ -2,9 +2,6 @@
   <div
       ref="el"
       class="ws-item transition transform duration-300 ease-in-out"
-      :class="{
-         'opacity-50': disbale
-      }"
   >
     <div>
       <slot></slot>
@@ -29,7 +26,6 @@ import {IShortcut} from "@shared/interface/shortcut"
 const props = defineProps<{
   hotkey?: string
   item?: IShortcut
-  disbale?: boolean
 }>()
 
 </script>
