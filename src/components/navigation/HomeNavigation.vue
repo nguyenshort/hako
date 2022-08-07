@@ -1,11 +1,31 @@
 <template>
-  <div id="navigation" class="w-0 transform relative">
+  <div id="navigation" class="w-0 transform relative min-h-screen">
 
-    <div class="h-7"></div>
+    <!-- fix scrollbar -->
+    <div ref="fixRef">
+      <div class="h-5"></div>
+      <ws-item
+          :disbale="false"
+          @click="openWorkspace()"
+          class="last:before:hidden"
+          hotkey="⌘N"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1"/>
+          <path d="M12 8V16" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M16 12L8 12" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </ws-item>
+    </div>
 
-
-    <div id="list-actions" class="overflow-y-auto scrollbar-hide">
+    <div
+        id="list-actions"
+        ref="actionsRef"
+        class="overflow-y-auto scrollbar-hide"
+        :style="{ height }"
+    >
       <div>
+
         <ws-item
             v-for="(item, index) in workspaceStore.shortcuts"
             :key="item._id"
@@ -15,27 +35,11 @@
             @click="changeFocused(item)"
             @contextmenu.prevent="showWsOptions(item)"
         ></ws-item>
-
-        <ws-item
-            :disbale="false"
-            @click="openWorkspace()"
-            class="last:before:hidden"
-            hotkey="⌘N"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1"/>
-            <path d="M12 8V16" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16 12L8 12" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </ws-item>
       </div>
-
       <div v-for="index in 3" :key="index" class="ws-item _fake"></div>
     </div>
 
-    <div class="absolute bottom-0 pb-2 right-0 left-0 _fix">
-
-      <div class="h-12"></div>
+    <div ref="fixMenuRef" class="absolute bottom-0 right-0 left-0 _fix pb-3 bg-slate-900">
 
       <ws-item @click="toggleColorMode">
         <svg v-if="mode === 'light'" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94"/><circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></svg>
@@ -55,7 +59,6 @@
 
     </div>
 
-
     <div class="absolute top-0 bottom-0 right-0 w-px bg-slate-800"></div>
 
   </div>
@@ -64,7 +67,7 @@
 <script lang="ts" setup>
 import {useWorkspaceStore} from "@store/workspace";
 import {IShortcut} from "@shared/interface/shortcut";
-import {useColorMode, useWindowSize} from "@vueuse/core";
+import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
 import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
 
@@ -88,9 +91,14 @@ const removeShortcut = async (shortcut: IShortcut) => {
 
 
 const { height: heightWindow } = useWindowSize()
+const fixRef = ref<HTMLDivElement>()
+const fixRefSize = useElementSize(fixRef)
+
+const fixMenuRef = ref<HTMLDivElement>()
+const fixMenuRefSize = useElementSize(fixMenuRef)
 
 const height = computed(() => {
-  return (heightWindow.value - 36) + 'px'
+  return (heightWindow.value - fixRefSize.height.value - fixMenuRefSize.height.value) + 'px'
 })
 
 const mode = useColorMode() // Ref<'dark' | 'light'>
@@ -125,19 +133,14 @@ export default defineComponent({
 <style lang="scss">
 #navigation {
   opacity: 0;
-  // transition: width 300ms ease-in-out;
 
   &._active {
     width: 75px;
     opacity: 1;
   }
 
-  #list-actions {
-    height: v-bind(height);
-  }
-
   .ws-item {
-    @apply w-full aspect-1 flex justify-center items-center relative before:absolute before:bottom-0 before:h-px before:left-3 before:right-3 before:bg-slate-800 cursor-pointer
+    @apply w-full aspect-1 flex justify-center items-center relative before:absolute before:top-0 before:h-px before:left-3 before:right-3 before:bg-slate-800 cursor-pointer
   }
 
   .ws-item {
@@ -155,10 +158,6 @@ export default defineComponent({
 
   >._fix > .ws-item {
     aspect-ratio: 5/4;
-  }
-
-  >._fix {
-    @apply bg-gradient-to-b from-transparent to-slate-900 via-slate-900
   }
 
 }

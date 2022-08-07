@@ -1,5 +1,7 @@
 <template>
-  <div class="ws-item transition transform duration-300 ease-in-out"
+  <div
+      ref="el"
+      class="ws-item transition transform duration-300 ease-in-out"
       :class="{
          'opacity-50': disbale
       }"
@@ -29,4 +31,5 @@ const props = defineProps<{
   item?: IShortcut
   disbale?: boolean
 }>()
+
 </script>
