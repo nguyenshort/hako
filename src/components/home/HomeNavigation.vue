@@ -148,7 +148,7 @@ export default defineComponent({
 }
 
 #navigation._active {
-  width: 83px;
+  width: 75px;
   opacity: 1;
 }
 

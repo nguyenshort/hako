@@ -1,6 +1,5 @@
 <template>
   <div id="home">
-
     <div class="flex">
       <home-navigation
           ref="naviRef"

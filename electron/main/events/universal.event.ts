@@ -1,3 +1,6 @@
+import {useUniversalService} from "../composables";
+
 export const initUniversalViewHandle = async (_id: string) => {
-    console.log('Request init universal view:', _id)
+    const universalService = useUniversalService()
+    await universalService.upsertView(_id)
 }

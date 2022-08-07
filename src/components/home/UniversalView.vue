@@ -1,10 +1,10 @@
 <template>
-  <div :id="'universal-' + shortcut._id"></div>
+  <div :id="'universal-' + shortcut._id" class="h-full"></div>
 </template>
 
 <script lang="ts" setup>
 import {IShortcut} from "@shared/interface/shortcut";
-import {nextTick, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 
 const props = defineProps<{
   shortcut: IShortcut
@@ -16,7 +16,6 @@ const init = async () => {
     await window.ipcRenderer.initUniversalView(props.shortcut._id)
     loading.value = false
   } catch (e) {
-    // Todo: handle error
   }
 }
 

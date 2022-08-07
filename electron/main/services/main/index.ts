@@ -1,5 +1,5 @@
 import {injectable} from "inversify";
-import {app, BrowserWindow, shell} from "electron";
+import {app, BrowserWindow} from "electron";
 import {join} from "path"
 import windowStateKeeper from "electron-window-state";
 import {ROOT_PATH} from "../../index";
@@ -17,6 +17,9 @@ export class MainService {
 
     #init() {}
     async createMainWindow(preload: string) {
+
+        console.log('Creating main window')
+
         const mainWindowState = windowStateKeeper({
             defaultWidth: 1024,
             defaultHeight: 768,
@@ -60,7 +63,8 @@ export class MainService {
 
         // Make all links open with the browser, not with the application
         this.win.webContents.setWindowOpenHandler(({ url }) => {
-            if (url.startsWith('https:')) shell.openExternal(url)
+            console.log(url)
+            // if (url.startsWith('https:')) shell.openExternal(url)
             return { action: 'deny' }
         })
     }

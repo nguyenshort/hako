@@ -1,10 +1,12 @@
 import "reflect-metadata"
-import { app, BrowserWindow, ipcMain, session, protocol } from 'electron'
+import {app, BrowserWindow, session} from 'electron'
 import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
 import * as path from "path"
 import {useDatabase, useMainService} from "./composables";
+import {Deeplink} from "electron-deeplink"
+import isDev from 'electron-is-dev'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -33,7 +35,6 @@ export const ROOT_PATH = {
 const databaseService = useDatabase()
 const mainService = useMainService()
 
-
 // Here, you can also use other preload
 const preload = join(__dirname, '../preload/index.js')
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
@@ -61,13 +62,21 @@ const vueDevToolsPath = path.join(
     '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.2.1_0'
 )
 
-const PROTOCOL_PREFIX = 'hakox'
 app.whenReady().then(async () => {
-  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (req, cb) => {
-    console.log('HTTP request', req.url)
-  })
   await createWindow()
   await session.defaultSession.loadExtension(vueDevToolsPath)
+
+  const deeplink = new Deeplink({
+    app,
+    mainWindow: mainService.win!,
+    protocol: 'hako-x',
+    isDev: isDev
+  })
+
+
+  deeplink.on('received', (link) => {
+    console.log('deep link received', link)
+  });
 })
 
 app.on('window-all-closed', () => {
@@ -90,20 +99,4 @@ app.on('activate', async () => {
   } else {
     await createWindow()
   }
-})
-
-// new window example arg: new windows url
-ipcMain.handle('open-win', (event, arg) => {
-  const childWindow = new BrowserWindow({
-    webPreferences: {
-      preload,
-    },
-  })
-
-/*  if (app.isPackaged) {
-    childWindow.loadFile(indexHtml, { hash: arg })
-  } else {
-    childWindow.loadURL(`${url}/#${arg}`)
-    // childWindow.webContents.openDevTools({ mode: "undocked", activate: true })
-  }*/
 })
