@@ -3,7 +3,7 @@ import {ICreateShortcut} from "@shared/interface/shortcut"
 import {
     createShortcutHandle,
     getShortcutsHandle,
-    openShortcutContextHanle,
+    openShortcutContextHanle, openSpotlightHandle,
     removeShortcutsHandle,
     toggleBaseView
 } from "./shortcut.event"
@@ -14,6 +14,8 @@ export const eventsRegister = () => {
 
     // Các event liên quan tới thông báo
     ipcMain.handle('show-notification', (_, title: string, message: string) => fireNotify(title, message))
+    ipcMain.handle('open-spotlight', () => openSpotlightHandle())
+
     /**
      * Các handle liên quan tới shortcut
      */

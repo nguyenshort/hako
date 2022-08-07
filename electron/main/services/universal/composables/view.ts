@@ -2,6 +2,8 @@ import UserAgent from 'user-agents'
 import {useSession} from "./session";
 import {BrowserView, WebPreferences} from "electron"
 
+import {join} from "path";
+
 /**
  * Tạo view to web mục tiêu
  * B1: Tạo UserAgent
@@ -32,11 +34,15 @@ export const useUniversalView = async (id: string) => {
 }
 
 const useWebPrefs = (): WebPreferences => {
+
+    const preload = join(__dirname, '../../../../preload/universal.js')
+
     return {
         spellcheck: false,
         nodeIntegration: false,
         contextIsolation: true,
-        plugins: true, // PDF reader
-        scrollBounce: true
+        plugins: true,
+        scrollBounce: true,
+        preload
     }
 }

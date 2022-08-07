@@ -1,6 +1,8 @@
 import {ipcRenderer, contextBridge} from "electron"
 import {ICallback, IShortcut} from "@shared/interface/shortcut"
 
+import './spotlight'
+
 
 contextBridge.exposeInMainWorld('ipcRenderer', {
 

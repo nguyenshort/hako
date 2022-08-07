@@ -103,3 +103,8 @@ export const openShortcutContextHanle = async (_id: string) => {
 
     ctxMenu.popup()
 }
+
+export const openSpotlightHandle = async () => {
+    const mainService = useMainService()
+    await mainService.openSpotlight()
+}

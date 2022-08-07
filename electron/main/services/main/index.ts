@@ -119,4 +119,8 @@ export class MainService {
         this.win?.emit(event, data)
         this.baseView?.webContents.send(event, data)
     }
+
+    async openSpotlight() {
+        console.log('🌧 Open spotlight')
+    }
 }
