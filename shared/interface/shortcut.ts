@@ -4,6 +4,7 @@ export interface IShortcut {
     icon: string
     url: string
     order?: number
+    muted?: boolean
 }
 
 export type ICreateShortcut = Pick<IShortcut, 'name' | 'icon' | 'url'>

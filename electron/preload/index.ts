@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // Base View
     toggleBaseView: (visiable: boolean) => ipcRenderer.invoke('toggle-base-view', visiable),
-    useEvent: (event: string, callback: ICallback) => ipcRenderer.on(event, (event, data) => callback(data)),
+    useEventListener: (event: string, callback: ICallback) => ipcRenderer.on(event, (event, data) => callback(data)),
 
 
     // Thông báo

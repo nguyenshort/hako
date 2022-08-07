@@ -1,5 +1,7 @@
 import {App} from "vue"
-import {ICallback} from "@shared/interface/shortcut";
+import {ICallback} from "@shared/interface/shortcut"
+
+type IEvent = 'after-shortcut-created' | 'after-shortcut-removed' | 'after-updated-shortcut' | string
 
 export interface ipcRendererAPI {
     showNotification: (title: string, message: string) => Promise<void>
@@ -10,7 +12,7 @@ export interface ipcRendererAPI {
     openShortcutContext: (id: string) => Promise<void>,
 
     toggleBaseView: (visiable: boolean) => Promise<void>,
-    useEvent: (event: string, callback: ICallback) => void,
+    useEventListener: (event: IEvent, callback: ICallback) => void,
 
     initUniversalView: (args: any) => Promise<void>
     toggleUniversalView: (_id: string) => Promise<void>

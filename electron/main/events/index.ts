@@ -7,7 +7,7 @@ import {
     removeShortcutsHandle,
     toggleBaseView
 } from "./shortcut.event"
-import {initUniversalViewHandle, toggleUniversalViewHandle} from "./universal.event"
+import {initUniversalViewHandle, toggleMutedViewHandle, toggleUniversalViewHandle} from "./universal.event"
 
 export const eventsRegister = () => {
 
@@ -34,4 +34,5 @@ export const eventsRegister = () => {
      */
     ipcMain.handle('init-universal-view', (_, _id) => initUniversalViewHandle(_id))
     ipcMain.handle('toggle-universal-view', (_, _id) => toggleUniversalViewHandle(_id))
+    ipcMain.handle('toggle-muted-view', (_, _id) => toggleMutedViewHandle(_id))
 }

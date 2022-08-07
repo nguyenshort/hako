@@ -1,4 +1,4 @@
-import {ICreateShortcut} from "@shared/interface/shortcut"
+import {ICreateShortcut, IShortcut} from "@shared/interface/shortcut"
 import {useDatabase, useMainService, useUniversalService} from "../composables";
 import {Menu, Notification} from 'electron'
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
@@ -30,9 +30,19 @@ export const removeShortcutsHandle = async (id: string) => {
         const dbs = useDatabase()
         const mainService = useMainService()
 
-        console.log("Removing shortcut...", id)
-        await dbs.shortcuts.removeAsync({ _id: id }, { multi: false })
-        mainService.notifyToBaseView("after-shortcut-removed", id)
+        const shortcut: IShortcut = await dbs.shortcuts.findOneAsync({_id: id})
+        if(!shortcut) {
+            // Không có shortcut này
+            return
+        }
+
+        console.log("🔥Removing shortcut: ", shortcut.name)
+
+        await dbs.shortcuts.removeAsync({ _id: shortcut._id }, { multi: false })
+        mainService.notifyToBaseView("after-shortcut-removed", shortcut._id)
+
+        new Notification({ title: 'Xoá thành công', body: `Bạn đã xoá ${shortcut.name}` }).show()
+
     } catch (e) {
         console.log('Error getting shortcuts', e)
     }
@@ -46,9 +56,17 @@ export const toggleBaseView = async (visiable: boolean) => {
 }
 
 export const openShortcutContextHanle = async (_id: string) => {
+
     console.log('✅ Context menu for:', _id)
 
     const universalService = useUniversalService()
+    const dbServices = useDatabase()
+
+    const shortcut: IShortcut = await dbServices.shortcuts.findOneAsync({ _id })
+    if(!shortcut) {
+        // Không có shortcut này
+        return
+    }
 
     /**
      * Xoá shortcut ra khỏi db
@@ -57,14 +75,18 @@ export const openShortcutContextHanle = async (_id: string) => {
      * Todo: Update UI
      */
     const clickDeleteHandle = async () => {
-        await universalService.removeView(_id)
         await removeShortcutsHandle(_id)
-        new Notification({ title: 'Xoá thành công', body: 'Thành công' }).show()
+        await universalService.removeView(_id)
+    }
+
+    const clickToggleMuted = async () => {
+        await universalService.toggleMutedView(_id)
     }
 
     const menus: Array<(MenuItemConstructorOptions) | (MenuItem)> = [
         {
-            label: 'Tắt tiếng'
+            label: shortcut.muted ? 'Bật tiếng' : 'Tắt tiếng',
+            click: clickToggleMuted
         },
         {
             label: 'Xoá tài khoản',

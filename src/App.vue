@@ -12,9 +12,9 @@
 
 import {onMounted, ref} from "vue";
 import AppLoading from "./components/includes/AppLoading.vue"
-import {useEmitter} from "@nguyenshort/vue3-mitt"
 import {useWorkspaceStore} from "@store/workspace";
 import SettingModal from "@components/includes/SettingModal.vue";
+import {IShortcut} from "@shared/interface/shortcut";
 
 // Store
 const workspaceStore = useWorkspaceStore()
@@ -27,16 +27,28 @@ onMounted(() => {
   }, 1000)
 })
 
-const refreshShortcuts = async () => {
+const getShortcuts = async () => {
   const shortcuts = await window.ipcRenderer.getShortcuts()
   workspaceStore.setShortcuts(shortcuts)
 }
-onMounted(() => refreshShortcuts())
+onMounted(() => getShortcuts())
 
-// Làm mới shortcuts
-const emitter = useEmitter()
+// Add listener
 onMounted(() => {
-  emitter.on('refresh-shortcuts', refreshShortcuts)
+  // thêm shortcut
+  window.ipcRenderer.useEventListener("after-shortcut-created", (shortcut: IShortcut) => {
+    workspaceStore.setShortcuts([...workspaceStore.shortcuts, shortcut])
+  })
+
+  // xóa shortcut
+  window.ipcRenderer.useEventListener("after-shortcut-removed", (_id: string) => {
+    workspaceStore.setShortcuts(workspaceStore.shortcuts.filter(item => item._id !== _id))
+  })
+
+  // Cập nhật
+  window.ipcRenderer.useEventListener("after-updated-shortcut", (shortcut: IShortcut) => {
+    workspaceStore.setShortcuts(workspaceStore.shortcuts.map(item => item._id === shortcut._id ? shortcut : item))
+  })
 })
 
 </script>

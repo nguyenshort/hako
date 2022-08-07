@@ -9,3 +9,8 @@ export const toggleUniversalViewHandle = async (_id: string) => {
     const universalService = useUniversalService()
     await universalService.togggleView(_id)
 }
+
+export const toggleMutedViewHandle = async (_id: string) => {
+    const universalService = useUniversalService()
+    await universalService.toggleMutedView(_id)
+}

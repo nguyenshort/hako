@@ -97,8 +97,6 @@ const apps = reactive<ICreateShortcut[]>([
 const clickShortcutHandle = async (app: ICreateShortcut) => {
   try {
     await ipcRenderer.createShortcut(Object.assign({}, app))
-    emitter.emit('refresh-shortcuts')
-    await ipcRenderer.showNotification('Success', 'Shortcut created')
   } catch (e) {
     console.log(e)
     // Todo: Error
