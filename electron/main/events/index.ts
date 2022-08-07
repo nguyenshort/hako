@@ -1,7 +1,7 @@
 import {ipcMain, Notification} from 'electron'
 import {ICreateShortcut} from "@shared/interface/shortcut"
 import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle} from "./shortcut.event"
-import {initUniversalViewHandle} from "./universal.event"
+import {initUniversalViewHandle, toggleUniversalViewHandle} from "./universal.event"
 
 export const eventsRegister = () => {
 
@@ -20,4 +20,5 @@ export const eventsRegister = () => {
      * Init universal view
      */
     ipcMain.handle('init-universal-view', (_, _id) => initUniversalViewHandle(_id))
+    ipcMain.handle('toggle-universal-view', (_, _id) => toggleUniversalViewHandle(_id))
 }

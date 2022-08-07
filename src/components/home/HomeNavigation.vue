@@ -87,8 +87,9 @@ import {computed, watch} from "vue";
 
 const workspaceStore = useWorkspaceStore()
 
-const changeFocused = (shortcut: IShortcut) => {
+const changeFocused = async (shortcut: IShortcut) => {
   workspaceStore.setFocusedShortcut(shortcut)
+  await window.ipcRenderer.toggleUniversalView(shortcut._id)
 }
 
 const removeShortcut = async (shortcut: IShortcut) => {

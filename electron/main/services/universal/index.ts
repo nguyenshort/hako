@@ -39,6 +39,7 @@ export class UniversalService {
         }
 
         const view = await useUniversalView(_id)
+        view.webContents.audioMuted = true
 
         await this.injectView(view, shortcut)
     }
@@ -69,5 +70,12 @@ export class UniversalService {
         })
 
         await view.webContents.loadURL(shortcut.url)
+    }
+
+    async togggleView(_id: string) {
+        if(!this.mainService.win) {
+            return
+        }
+        this.mainService.win.webContents.focus()
     }
 }
