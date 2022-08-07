@@ -23,7 +23,7 @@ export class MainService {
         console.log('Creating main window')
 
         const mainWindowState = windowStateKeeper({
-            defaultWidth: 1024,
+            defaultWidth: 990,
             defaultHeight: 768,
         })
 

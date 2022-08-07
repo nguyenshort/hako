@@ -3,12 +3,15 @@
 
     <!-- fix scrollbar -->
     <div ref="fixRef" class="flex-shrink-0">
-      <div class="h-5"></div>
+      <div class="h-8"></div>
       <ws-item
           :disbale="false"
           @click="openWorkspace()"
           class="last:before:hidden"
           hotkey="⌘N"
+          :class="{
+            _active: workspaceStore.componentView === 'workspace' && !workspaceStore.focused
+          }"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12Z" stroke="currentColor" stroke-width="1"/>
@@ -39,9 +42,17 @@
       <div class="h-10"></div>
     </div>
 
-    <div ref="fixMenuRef" class="flex-shrink-0">
+    <div ref="fixMenuRef" class="flex-shrink-0 anchor-list">
 
       <div class="h-6"></div>
+
+      <ws-item
+          v-if="workspaceStore.hasShortcut"
+          :hotkey="`${workspaceStore.shortcuts.length}`"
+          class="apps"
+      >
+        <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M201.14 64L256 32l54.86 32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 32v80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M310.86 448L256 480l-54.86-32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 480v-80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M64 207.51V144l53.15-31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 144l67.29 40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M448 304.49V368l-53.15 31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 368l-67.29-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M117.15 400L64 368v-63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 368l66.64-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M394.85 112.49L448 144v63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 144l-67.29 40M256 320v-64l54.86-32M256 256l-54.86-32"/></svg>
+      </ws-item>
 
       <ws-item @click="toggleColorMode">
         <svg v-if="mode === 'light'" width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 48v48M256 416v48M403.08 108.92l-33.94 33.94M142.86 369.14l-33.94 33.94M464 256h-48M96 256H48M403.08 403.08l-33.94-33.94M142.86 142.86l-33.94-33.94"/><circle cx="256" cy="256" r="80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/></svg>
@@ -117,6 +128,7 @@ const toggleColorMode = () => {
  * B2: Thay đổi index thông qua main process
  */
 const openWorkspace = () => {
+  workspaceStore.setFocused(undefined)
   workspaceStore.setComponentView('workspace')
   window.ipcRenderer.toggleBaseView(true)
 }
@@ -171,7 +183,7 @@ export default defineComponent({
   .ws-item {
 
     &._active {
-      @apply bg-primary-100 dark:bg-slate-800 after:absolute after:left-0 after:top-0 after:bottom-0 after:border-l-4 after:border-primary-600
+      @apply bg-primary-50 dark:bg-slate-800 after:absolute after:left-0 after:top-0 after:bottom-0 after:border-l-4 after:border-primary-600
     }
 
     >.badge {
@@ -182,8 +194,13 @@ export default defineComponent({
     }
   }
 
-  >._fix > .ws-item {
+  .anchor-list > .ws-item {
     aspect-ratio: 5/4;
+    &.apps {
+      .badge {
+        @apply bg-primary-500 dark:bg-slate-800 p-0 w-4 aspect-1 flex justify-center items-center right-2 bottom-2 text-white dark:text-current
+      }
+    }
   }
 
 }
