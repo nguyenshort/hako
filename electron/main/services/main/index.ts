@@ -100,7 +100,7 @@ export class MainService {
         })
 
         this.baseView = view
-        console.log('🛰 Injected base view')
+        console.log('🛰 Injected base view ')
     }
 
     async toggleBaseView(visible: boolean) {
