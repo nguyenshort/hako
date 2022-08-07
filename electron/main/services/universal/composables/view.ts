@@ -6,6 +6,7 @@ import {BrowserView, WebPreferences} from "electron"
  * Tạo view to web mục tiêu
  * B1: Tạo UserAgent
  * B2: Custom session
+ * Todo: Fix secure context error
  */
 export const useUniversalView = async (id: string) => {
 
