@@ -27,14 +27,14 @@
             ref="workRef"
             class="view-wrapper"
             :class="{
-              '_active': workspaceStore.workspaceEnable
+              '_active': workspaceStore.workspaceEnable || !workspaceStore.shortcuts.length
             }"
         />
 
         <div
-            class="view-wrapper"
+            class="view-wrapper _deleted"
             :class="{
-              '_active': workspaceStore.focusedDeleted
+              '_active': workspaceStore.focusedDeleted && workspaceStore.shortcuts.length
             }"
         >
           <app-deleted />

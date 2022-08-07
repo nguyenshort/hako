@@ -38,10 +38,13 @@ onMounted(() => {
   // thêm shortcut
   window.ipcRenderer.useEventListener("after-shortcut-created", (shortcut: IShortcut) => {
     workspaceStore.setShortcuts([...workspaceStore.shortcuts, shortcut])
+    // Auto focus vào shortcut mới
+    workspaceStore.setFocusedShortcut(shortcut)
   })
 
   // xóa shortcut
   window.ipcRenderer.useEventListener("after-shortcut-removed", (_id: string) => {
+    console.log("after-shortcut-removed", _id)
     workspaceStore.setShortcuts(workspaceStore.shortcuts.filter(item => item._id !== _id))
   })
 

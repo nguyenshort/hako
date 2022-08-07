@@ -2,6 +2,7 @@ import {ICreateShortcut, IShortcut} from "@shared/interface/shortcut"
 import {useDatabase, useMainService, useUniversalService} from "../composables";
 import {Menu, Notification} from 'electron'
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
+import {fireNotify} from "./notify.event";
 
 export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     console.log("Creating shortcut...", shortcut.name)
@@ -10,6 +11,10 @@ export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     try {
         const _shortcut = await db.shortcuts.insertAsync(shortcut)
         mainService.notifyToBaseView("after-shortcut-created", _shortcut)
+
+        // Gửi thông báo
+        fireNotify("Thành công", `Đã tạo shortcut ${_shortcut.name}`)
+
     } catch (e) {
         console.log('Error creating shortcut', e)
     }
@@ -41,7 +46,7 @@ export const removeShortcutsHandle = async (id: string) => {
         await dbs.shortcuts.removeAsync({ _id: shortcut._id }, { multi: false })
         mainService.notifyToBaseView("after-shortcut-removed", shortcut._id)
 
-        new Notification({ title: 'Xoá thành công', body: `Bạn đã xoá ${shortcut.name}` }).show()
+        fireNotify("Thành công", `Đã xóa shortcut ${shortcut.name}`)
 
     } catch (e) {
         console.log('Error getting shortcuts', e)

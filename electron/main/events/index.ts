@@ -1,4 +1,4 @@
-import {ipcMain, Notification} from 'electron'
+import {ipcMain} from 'electron'
 import {ICreateShortcut} from "@shared/interface/shortcut"
 import {
     createShortcutHandle,
@@ -8,13 +8,12 @@ import {
     toggleBaseView
 } from "./shortcut.event"
 import {initUniversalViewHandle, toggleMutedViewHandle, toggleUniversalViewHandle} from "./universal.event"
+import {fireNotify} from "./notify.event";
 
 export const eventsRegister = () => {
 
     // Các event liên quan tới thông báo
-    ipcMain.handle('show-notification', (_, title: string, message: string) => {
-        new Notification({ title, body: message }).show()
-    })
+    ipcMain.handle('show-notification', (_, title: string, message: string) => fireNotify(title, message))
     /**
      * Các handle liên quan tới shortcut
      */

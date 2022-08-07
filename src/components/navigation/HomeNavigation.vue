@@ -1,7 +1,7 @@
 <template>
   <div id="navigation" class="w-0 transform relative">
 
-    <div class="h-9"></div>
+    <div class="h-7"></div>
 
 
     <div id="list-actions" class="overflow-y-auto scrollbar-hide">
@@ -125,7 +125,7 @@ export default defineComponent({
 <style lang="scss">
 #navigation {
   opacity: 0;
-  transition: width 300ms ease-in-out;
+  // transition: width 300ms ease-in-out;
 
   &._active {
     width: 75px;

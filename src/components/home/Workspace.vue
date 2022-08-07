@@ -1,7 +1,13 @@
 <template>
-  <div class="px-3 pb-4 pt-2">
+  <div
+      class="px-5 pb-4"
+      :class="{
+        'pt-7': !workspaceStore.hasShortcut,
+        'pt-4': workspaceStore.hasShortcut
+      }"
+  >
 
-    <div class="flex items-center mt-3">
+    <div class="flex items-center">
       <div>
         <input type="checkbox" />
         <span class="text-sm ml-2">Show app links</span>
@@ -41,6 +47,9 @@
 
 <script lang="ts" setup>
 import ListShortCut from "../ListShortCut.vue"
+import {useWorkspaceStore} from "@store/workspace";
+
+const workspaceStore = useWorkspaceStore()
 
 </script>
 <script lang="ts">
