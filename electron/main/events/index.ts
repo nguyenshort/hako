@@ -1,6 +1,6 @@
 import {ipcMain, Notification} from 'electron'
 import {ICreateShortcut} from "@shared/interface/shortcut"
-import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle} from "./shortcut.event"
+import {createShortcutHandle, getShortcutsHandle, removeShortcutsHandle, toggleBaseView} from "./shortcut.event"
 import {initUniversalViewHandle, toggleUniversalViewHandle} from "./universal.event"
 
 export const eventsRegister = () => {
@@ -15,6 +15,11 @@ export const eventsRegister = () => {
     ipcMain.handle('create-shortcut', async (_, args: ICreateShortcut) => createShortcutHandle(args))
     ipcMain.handle('gets-shortcut', async () => getShortcutsHandle())
     ipcMain.handle('remove-shortcut', async (_, id: string) => removeShortcutsHandle(id))
+
+    /**
+     * Base View
+     */
+    ipcMain.handle('toggle-base-view', async (_, visiable: boolean) => toggleBaseView(visiable))
 
     /**
      * Init universal view

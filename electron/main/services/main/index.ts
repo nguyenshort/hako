@@ -1,5 +1,5 @@
 import {injectable} from "inversify";
-import {app, BrowserWindow} from "electron";
+import {app, BrowserView, BrowserWindow, WebPreferences} from "electron";
 import {join} from "path"
 import windowStateKeeper from "electron-window-state";
 import {ROOT_PATH} from "../../index";
@@ -11,12 +11,14 @@ export class MainService {
 
     win?: Electron.BrowserWindow
 
+    baseView?: Electron.BrowserView
+
     constructor() {
         this.#init()
     }
 
     #init() {}
-    async createMainWindow(preload: string) {
+    async createMainWindow() {
 
         console.log('Creating main window')
 
@@ -25,47 +27,92 @@ export class MainService {
             defaultHeight: 768,
         })
 
-        const options: Electron.BrowserWindowConstructorOptions = {
-            title: 'Main window',
-            icon: join(ROOT_PATH.public, 'favicon.ico'),
+        this.win = new BrowserWindow({
+            title: 'Hako Apps',
             width: mainWindowState.width,
             height: mainWindowState.height,
             transparent : true,
-            titleBarStyle : 'hidden',
-            webPreferences: {
-                spellcheck: false,
-                preload,
-                nodeIntegration: false
-            },
-        }
-
-        this.win = new BrowserWindow(options)
+            titleBarStyle : 'hidden'
+        })
 
         if(!this.win) {
             app.exit(0)
             return
         }
+        await this.injectBaseView()
+    }
 
+    async injectBaseView() {
+
+        console.log('🌧 Injecting base view')
+
+        if(!this.win) {
+            // Không có windown => create
+            await this.createMainWindow()
+            return
+        }
+
+        const preload = join(__dirname, '../preload/index.js')
         const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
         const indexHtml = join(ROOT_PATH.dist, 'index.html')
+
+        const options: WebPreferences = {
+            spellcheck: false,
+            preload,
+            nodeIntegration: false
+        }
+
+        const view: Electron.BrowserView = new BrowserView({
+            webPreferences: options,
+        })
+
+        view.setBackgroundColor('#FFFFFFFF')
+        this.win.addBrowserView(view)
+        const [width, height] = this.win.getContentSize()
+
+        view.setBounds({
+            x: 0,
+            y: 0,
+            width: width,
+            height: height
+        })
+        view.setAutoResize({
+            width: true,
+            height: true,
+        })
+
         if (app.isPackaged) {
-            await this.win.loadFile(indexHtml)
+            await view.webContents.loadFile(indexHtml)
         } else {
-            await this.win.loadURL(url)
+            await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
             // win.webContents.openDevTools()
         }
 
-        // Test actively push message to the Electron-Renderer
-        this.win.webContents.on('did-finish-load', () => {
-            this.win?.webContents.send('main-process-message', new Date().toLocaleString())
+        view.webContents.on('did-finish-load', () => {
+            view.webContents.send('main-process-message', new Date().toLocaleString())
         })
 
-        // Make all links open with the browser, not with the application
-        this.win.webContents.setWindowOpenHandler(({ url }) => {
+        view.webContents.setWindowOpenHandler(({ url }) => {
             console.log(url)
             // if (url.startsWith('https:')) shell.openExternal(url)
             return { action: 'deny' }
         })
+
+        this.baseView = view
+        console.log('🛰 Injected base view')
+    }
+
+    async toggleBaseView(visible: boolean) {
+
+        if(!this.baseView) {
+            await this.injectBaseView()
+            await this.toggleBaseView(visible)
+            return
+        }
+
+        if(visible) {
+           this.win?.setTopBrowserView(this.baseView)
+        }
     }
 }

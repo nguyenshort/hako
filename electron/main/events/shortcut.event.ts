@@ -1,5 +1,5 @@
 import {ICreateShortcut} from "@shared/interface/shortcut"
-import {useDatabase} from "../composables";
+import {useDatabase, useMainService} from "../composables";
 
 export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     console.log("Creating shortcut...", shortcut.name)
@@ -29,4 +29,11 @@ export const removeShortcutsHandle = async (id: string) => {
     } catch (e) {
         console.log('Error getting shortcuts', e)
     }
+}
+
+
+
+export const toggleBaseView = async (visiable: boolean) => {
+    const mainService = useMainService()
+    await mainService.toggleBaseView(visiable)
 }

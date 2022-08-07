@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     getShortcuts: () => ipcRenderer.invoke('gets-shortcut'),
     removeShortcut: (id: string) => ipcRenderer.invoke('remove-shortcut', id),
 
+    // Base View
+    toggleBaseView: (visiable: boolean) => ipcRenderer.invoke('toggle-base-view', visiable),
+
 
     // Thông báo
     showNotification: (title: string, message: string) => ipcRenderer.invoke('show-notification', title, message),
