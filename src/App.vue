@@ -39,13 +39,26 @@ onMounted(() => {
   window.ipcRenderer.useEventListener("after-shortcut-created", (shortcut: IShortcut) => {
     workspaceStore.setShortcuts([...workspaceStore.shortcuts, shortcut])
     // Auto focus vào shortcut mới
-    workspaceStore.setFocusedShortcut(shortcut)
+    workspaceStore.setFocused(shortcut)
   })
 
   // xóa shortcut
   window.ipcRenderer.useEventListener("after-shortcut-removed", (_id: string) => {
-    console.log("after-shortcut-removed", _id)
-    workspaceStore.setShortcuts(workspaceStore.shortcuts.filter(item => item._id !== _id))
+
+    const items = workspaceStore.shortcuts.filter(item => item._id !== _id)
+
+    // Xóa shortcut trong đang xem
+    if (items.length === 0) {
+      // Xoá hết
+      workspaceStore.setComponentView('workspace')
+      workspaceStore.setFocused(undefined)
+    } else if (workspaceStore.focused?._id === _id) {
+      workspaceStore.setFocused(undefined)
+      workspaceStore.setComponentView('app-deleted')
+    }
+
+    workspaceStore.setShortcuts(items)
+
   })
 
   // Cập nhật

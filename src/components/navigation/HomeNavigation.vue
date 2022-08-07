@@ -46,7 +46,7 @@
         <svg v-else width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216 88.68 0 166.73-51.57 200-128-26.39 11.49-57.38 16-88 16-119.29 0-216-96.71-216-216z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
       </ws-item>
 
-      <ws-item>
+      <ws-item @click="openSetting()">
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 128h80M64 128h240M368 384h80M64 384h240M208 256h240M64 256h80"/><circle cx="336" cy="128" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="176" cy="256" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="336" cy="384" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
       </ws-item>
 
@@ -70,11 +70,12 @@ import {IShortcut} from "@shared/interface/shortcut";
 import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
 import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
+import {useEmitter} from "@nguyenshort/vue3-mitt";
 
 const workspaceStore = useWorkspaceStore()
 
 const changeFocused = async (shortcut: IShortcut) => {
-  workspaceStore.setFocusedShortcut(shortcut)
+  workspaceStore.setFocused(shortcut)
   await window.ipcRenderer.toggleUniversalView(shortcut._id)
 }
 
@@ -112,12 +113,29 @@ const toggleColorMode = () => {
  * B2: Thay đổi index thông qua main process
  */
 const openWorkspace = () => {
-  workspaceStore.setWorkspaceEnable(true)
+  workspaceStore.setComponentView('workspace')
   window.ipcRenderer.toggleBaseView(true)
 }
 
 const showWsOptions = (shortcut: IShortcut) => {
   window.ipcRenderer.openShortcutContext(shortcut._id)
+}
+
+const emitter = useEmitter()
+const openSetting = () => {
+
+  if(workspaceStore.focused) {
+    window.ipcRenderer.toggleBaseView(true)
+    workspaceStore.setComponentView('workspace')
+    workspaceStore.setFocused(undefined)
+
+    setTimeout(() => {
+      emitter.emit('settingModal')
+    }, 300)
+
+  } else {
+    emitter.emit('settingModal')
+  }
 }
 
 </script>

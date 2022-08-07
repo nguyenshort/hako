@@ -1,11 +1,8 @@
 <template>
-  <div></div>
+  <modal-base event="settingModal" :max-width="450" title="Cài Đặt"></modal-base>
 </template>
 
-<script>
-export default {
-  name: "SettingModal"
-}
-</script>
+<script lang="ts" setup>
+import ModalBase from "@components/modal/ModalBase.vue"
 
-<style scoped></style>
+</script>
