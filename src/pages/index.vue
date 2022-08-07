@@ -32,6 +32,7 @@
 <script lang="ts" setup>
 import Workspace from "@components/home/Workspace.vue"
 import AppDeleted from "@components/includes/AppDeleted.vue"
+import MyShortcuts from "@components/MyShortcuts.vue"
 
 import UniversalView from "../components/home/UniversalView.vue"
 import HomeNavigation from "@components/navigation/HomeNavigation.vue"
@@ -56,7 +57,22 @@ onMounted(() => nextTick( () => listenUniversalInjected()))
 
 
 const inView = computed<any>(() => {
-  return (workspaceStore.componentView === 'workspace' ? Workspace : AppDeleted)
+  let component
+  switch (workspaceStore.componentView) {
+    case 'workspace':
+      component = Workspace
+      break
+    case 'app-deleted':
+      component = AppDeleted
+      break
+    case 'my-shortcuts':
+      component = MyShortcuts
+      break
+    default:
+      component = UniversalView
+      break
+  }
+  return component
 })
 
 </script>

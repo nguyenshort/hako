@@ -4,7 +4,7 @@ import {IShortcut} from "@shared/interface/shortcut";
 interface State extends Record<string, any> {
     shortcuts: IShortcut[],
     focused?: IShortcut,
-    componentView: 'workspace' | 'app-deleted'
+    componentView: 'workspace' | 'app-deleted' | 'my-shortcuts'
 }
 
 // You can name the return value of `defineStore()` anything you want, but it's best to use the name of the store and surround it with `use` and `Store` (e.g. `useUserStore`, `useCartStore`, `useProductStore`)
@@ -28,7 +28,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         setFocused(shortcut?: IShortcut) {
             this.focused = shortcut
         },
-        setComponentView(name: 'workspace' | 'app-deleted') {
+        setComponentView(name: 'workspace' | 'app-deleted' | 'my-shortcuts') {
             this.componentView = name
         }
     }

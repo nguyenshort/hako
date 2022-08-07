@@ -21,26 +21,30 @@
       </ws-item>
     </div>
 
-    <div
+    <draggable
         id="list-actions"
         ref="actionsRef"
+        v-model="workspaceStore.shortcuts"
+        group="people"
+        item-key="_id"
         class="overflow-y-auto scrollbar-hide h-auto"
+        @start="drag=true"
+        @end="drag=false"
         :style="{ height }"
     >
-      <ws-item
-          v-for="(item, index) in workspaceStore.shortcuts"
-          :key="item._id"
-          :item="item"
-          :hotkey="`⌘${index + 1}`"
-          :class="{
-            _active: workspaceStore.focused?._id === item._id,
-            'opacity-75': !(workspaceStore.focused?._id === item._id)
+      <template #item="{element, index}">
+        <ws-item
+            :item="element"
+            :hotkey="`⌘${index + 1}`"
+            :class="{
+            _active: workspaceStore.focused?._id === element._id,
+            'opacity-75': !(workspaceStore.focused?._id === element._id)
           }"
-          @click="changeFocused(item)"
-          @contextmenu.prevent="showWsOptions(item)"
-      ></ws-item>
-      <div class="h-10"></div>
-    </div>
+            @click="changeFocused(element)"
+            @contextmenu.prevent="showWsOptions(element)"
+        ></ws-item>
+      </template>
+    </draggable>
 
     <div ref="fixMenuRef" class="flex-shrink-0 anchor-list">
 
@@ -50,6 +54,10 @@
           v-if="workspaceStore.hasShortcut"
           :hotkey="`${workspaceStore.shortcuts.length}`"
           class="apps"
+          :class="{
+            _active: workspaceStore.componentView === 'my-shortcuts' && !workspaceStore.focused
+          }"
+          @click="openMyShortcuts"
       >
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M201.14 64L256 32l54.86 32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 32v80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M310.86 448L256 480l-54.86-32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 480v-80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M64 207.51V144l53.15-31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 144l67.29 40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M448 304.49V368l-53.15 31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 368l-67.29-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M117.15 400L64 368v-63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 368l66.64-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M394.85 112.49L448 144v63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 144l-67.29 40M256 320v-64l54.86-32M256 256l-54.86-32"/></svg>
       </ws-item>
@@ -85,7 +93,8 @@ import {IShortcut} from "@shared/interface/shortcut";
 import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
 import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
-import {useEmitter} from "@nguyenshort/vue3-mitt";
+import {useEmitter} from "@nguyenshort/vue3-mitt"
+import draggable from 'vuedraggable'
 
 const workspaceStore = useWorkspaceStore()
 
@@ -154,6 +163,14 @@ const openSetting = () => {
   }
 }
 
+const openMyShortcuts = () => {
+  workspaceStore.setFocused(undefined)
+  workspaceStore.setComponentView('my-shortcuts')
+  window.ipcRenderer.toggleBaseView(true)
+}
+
+// drag/drop
+const drag = ref(false)
 </script>
 
 <script lang="ts">
@@ -199,6 +216,12 @@ export default defineComponent({
     &.apps {
       .badge {
         @apply bg-primary-500 dark:bg-slate-800 p-0 w-4 aspect-1 flex justify-center items-center right-2 bottom-2 text-white dark:text-current
+      }
+
+      &._active {
+        .badge {
+          @apply dark:bg-slate-900
+        }
       }
     }
   }
