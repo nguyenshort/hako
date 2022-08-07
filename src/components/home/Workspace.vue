@@ -7,21 +7,12 @@
       }"
   >
 
-    <div class="flex items-center">
+    <export-data>
       <div class="flex items-center">
         <input type="checkbox" />
         <span class="text-[13px] ml-2">Show app links</span>
       </div>
-
-      <button class="ml-auto shared-btn">
-        Shared App
-      </button>
-
-      <button class="shared-btn ml-3">
-        Export Data
-      </button>
-
-    </div>
+    </export-data>
 
     <div class="relative mt-3">
 
@@ -52,6 +43,7 @@
 <script lang="ts" setup>
 import ListShortCut from "../ListShortCut.vue"
 import {useWorkspaceStore} from "@store/workspace";
+import ExportData from "@components/ExportData.vue";
 
 const workspaceStore = useWorkspaceStore()
 
@@ -63,9 +55,3 @@ export default defineComponent({
   name: "Workspace"
 })
 </script>
-
-<style scoped>
-.shared-btn {
-  @apply text-sm px-4 py-0.5 rounded border border-primary-400 dark:text-primary-400 dark:bg-transparent text-white bg-primary-600
-}
-</style>
