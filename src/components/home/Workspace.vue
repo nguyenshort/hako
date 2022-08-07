@@ -43,9 +43,10 @@
 <script lang="ts" setup>
 import ListShortCut from "../ListShortCut.vue"
 import {useWorkspaceStore} from "@store/workspace";
-import ExportData from "@components/ExportData.vue";
+import ExportData from "@components/ExportData.vue"
 
 const workspaceStore = useWorkspaceStore()
+
 
 </script>
 <script lang="ts">
