@@ -55,7 +55,7 @@ export class UniversalService {
             return
         }
 
-        this.mainService.win.setBrowserView(view)
+        this.mainService.win.addBrowserView(view)
         const [width, height] = this.mainService.win.getContentSize()
 
         view.setBounds({
@@ -70,12 +70,21 @@ export class UniversalService {
         })
 
         await view.webContents.loadURL(shortcut.url)
+
+        this.views[shortcut._id] = view
+        console.log('Injected view:', shortcut.name)
     }
 
     async togggleView(_id: string) {
+        console.log('Toggle view:', _id)
         if(!this.mainService.win) {
             return
         }
-        this.mainService.win.webContents.focus()
+        const view = this.views[_id]
+        if(!view) {
+            // Không có view này
+            return
+        }
+        view.webContents.focus()
     }
 }
