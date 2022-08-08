@@ -9,7 +9,10 @@ export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     const db = useDatabase()
     const mainService = useMainService()
     try {
-        const _shortcut = await db.shortcuts.insertAsync(shortcut)
+        const _shortcut = await db.shortcuts.insertAsync({
+            ...shortcut,
+            isCustom: false
+        })
         mainService.notifyToBaseView("after-shortcut-created", _shortcut)
 
         // Gửi thông báo

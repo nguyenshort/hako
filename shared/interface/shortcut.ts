@@ -5,8 +5,9 @@ export interface IShortcut {
     url: string
     order?: number
     muted?: boolean
+    isCustom?: boolean
 }
 
-export type ICreateShortcut = Pick<IShortcut, 'name' | 'icon' | 'url'>
+export type ICreateShortcut = Pick<IShortcut, 'name' | 'icon' | 'url' | 'isCustom'>
 
 export type ICallback = (...args: any[]) => void|Promise<void>
