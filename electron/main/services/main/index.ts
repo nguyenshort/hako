@@ -13,6 +13,9 @@ export class MainService {
 
     baseView?: Electron.BrowserView
 
+    spotlightView?: Electron.BrowserView
+    opendSpotlight: boolean = false
+
     constructor() {
         this.#init()
     }
@@ -52,8 +55,36 @@ export class MainService {
             return
         }
 
-        const preload = join(__dirname, '../preload/index.js')
         const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
+
+        const view: Electron.BrowserView|undefined = await this.buildBaseView(url)
+        if(!view) {
+            return
+        }
+
+        view.webContents.on('did-finish-load', () => {
+            view.webContents.send('main-process-message', new Date().toLocaleString())
+        })
+
+        view.webContents.setWindowOpenHandler(({ url }) => {
+            console.log(url)
+            // if (url.startsWith('https:')) shell.openExternal(url)
+            return { action: 'deny' }
+        })
+
+        this.baseView = view
+        console.log('🛰 Injected base view ')
+    }
+
+    async buildBaseView(url: string) {
+
+        if(!this.win) {
+            // Không có windown => create
+            await this.createMainWindow()
+            return
+        }
+
+        const preload = join(__dirname, '../preload/index.js')
         const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
         const options: WebPreferences = {
@@ -66,7 +97,7 @@ export class MainService {
             webPreferences: options,
         })
 
-        view.setBackgroundColor('#FFFFFFFF')
+        view.setBackgroundColor('rgba(255,255,255,0)')
         this.win.addBrowserView(view)
         const [width, height] = this.win.getContentSize()
 
@@ -86,21 +117,10 @@ export class MainService {
         } else {
             await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
-            view.webContents.openDevTools()
+            // view.webContents.openDevTools()
         }
 
-        view.webContents.on('did-finish-load', () => {
-            view.webContents.send('main-process-message', new Date().toLocaleString())
-        })
-
-        view.webContents.setWindowOpenHandler(({ url }) => {
-            console.log(url)
-            // if (url.startsWith('https:')) shell.openExternal(url)
-            return { action: 'deny' }
-        })
-
-        this.baseView = view
-        console.log('🛰 Injected base view ')
+        return view
     }
 
     async toggleBaseView(visible: boolean) {
@@ -120,7 +140,55 @@ export class MainService {
         this.baseView?.webContents.send(event, data)
     }
 
+    /**
+     * Thực ra là toggle spotlight view
+     */
     async openSpotlight() {
-        console.log('🌧 Open spotlight')
+
+        console.log('🌧 Toggle spotlight')
+
+        const build = async () => {
+            const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}/spotlight`
+
+            const view: Electron.BrowserView = (await this.buildBaseView(url))!
+
+            view.webContents.on('did-finish-load', () => {
+                view.webContents.send('main-process-message', new Date().toLocaleString())
+            })
+
+            view.webContents.setWindowOpenHandler(({url}) => {
+                console.log(url)
+                // if (url.startsWith('https:')) shell.openExternal(url)
+                return {action: 'deny'}
+            })
+
+            this.spotlightView = view
+        }
+
+        // đang mở => đóng
+        if(this.opendSpotlight) {
+            console.log('🌧 Close spotlight')
+            this.opendSpotlight = false
+
+            if(this.spotlightView) {
+                this.win?.removeBrowserView(this.spotlightView)
+            }
+
+            return
+        }
+
+        // đang đóng => mở
+        else {
+            console.log('🌧 Open spotlight')
+            this.opendSpotlight = true
+            if(!this.spotlightView) {
+                console.log('🌧 Build spotlight view')
+                await build()
+            } else {
+                this.win?.addBrowserView(this.spotlightView)
+            }
+
+            // this.spotlightView?.webContents?.openDevTools()
+        }
     }
 }

@@ -74,6 +74,8 @@ export class UniversalService {
         this.views[shortcut._id] = view
         await this.mainService.notifyToBaseView('injected-universal-view', shortcut._id)
         console.log('Injected view:', shortcut.name)
+
+        view.webContents.openDevTools()
     }
 
     async togggleView(_id: string) {

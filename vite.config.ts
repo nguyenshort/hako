@@ -35,6 +35,7 @@ export default defineConfig({
         input: {
           // You can configure multiple preload here
           index: join(__dirname, 'electron/preload/index.ts'),
+          universal: join(__dirname, 'electron/preload/universal.ts'),
         },
         vite: {
           build: {

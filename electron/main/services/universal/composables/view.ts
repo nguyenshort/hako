@@ -35,7 +35,8 @@ export const useUniversalView = async (id: string) => {
 
 const useWebPrefs = (): WebPreferences => {
 
-    const preload = join(__dirname, '../../../../preload/universal.js')
+    // ../preload/index.js
+    const preload = join(__dirname, '../preload/universal.js')
 
     return {
         spellcheck: false,
