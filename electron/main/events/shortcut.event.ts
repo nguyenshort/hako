@@ -9,7 +9,7 @@ export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
     const db = useDatabase()
     const mainService = useMainService()
     try {
-        const _shortcut = await db.shortcuts.insertAsync({
+        const _shortcut = await db.apps.insertAsync({
             ...shortcut,
             isCustom: false
         })
@@ -26,7 +26,7 @@ export const createShortcutHandle = async (shortcut: ICreateShortcut) => {
 export const getShortcutsHandle = async () => {
     try {
         const dbs = useDatabase()
-        return await dbs.shortcuts.findAsync({})
+        return await dbs.apps.findAsync({})
             .sort({order: 1})
     } catch (e) {
         console.log('Error getting shortcuts', e)
@@ -38,7 +38,7 @@ export const removeShortcutsHandle = async (id: string) => {
         const dbs = useDatabase()
         const mainService = useMainService()
 
-        const shortcut: IShortcut = await dbs.shortcuts.findOneAsync({_id: id})
+        const shortcut: IShortcut = await dbs.apps.findOneAsync({_id: id})
         if(!shortcut) {
             // Không có shortcut này
             return
@@ -46,7 +46,7 @@ export const removeShortcutsHandle = async (id: string) => {
 
         console.log("🔥Removing shortcut: ", shortcut.name)
 
-        await dbs.shortcuts.removeAsync({ _id: shortcut._id }, { multi: false })
+        await dbs.apps.removeAsync({ _id: shortcut._id }, { multi: false })
         mainService.notifyToBaseView("after-shortcut-removed", shortcut._id)
 
         fireNotify("Thành công", `Đã xóa shortcut ${shortcut.name}`)
@@ -60,7 +60,7 @@ export const removeShortcutsHandle = async (id: string) => {
 
 export const toggleBaseView = async () => {
     const mainService = useMainService()
-    await mainService.toggleBaseView()
+    await mainService.toggleUniversalView()
 }
 
 export const openShortcutContextHanle = async (_id: string) => {
@@ -70,7 +70,7 @@ export const openShortcutContextHanle = async (_id: string) => {
     const universalService = useUniversalService()
     const dbServices = useDatabase()
 
-    const shortcut: IShortcut = await dbServices.shortcuts.findOneAsync({ _id })
+    const shortcut: IShortcut = await dbServices.apps.findOneAsync({ _id })
     if(!shortcut) {
         // Không có shortcut này
         return

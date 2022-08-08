@@ -6,9 +6,9 @@ import {DatabaseService} from "../database";
 import {IShortcut} from "@shared/interface/shortcut";
 
 @injectable()
-export class UniversalService {
+export class AppService {
 
-    static key: symbol = Symbol.for('UniversalService')
+    static key: symbol = Symbol.for(AppService.name)
 
     views: Record<string, BrowserView> = {}
 
@@ -28,7 +28,7 @@ export class UniversalService {
         if(!shortcut) {
             return
         }
-        console.log(`Init Universal: ${shortcut.name} - ${auto ? 'auto' : 'manual'}`)
+        console.log(`Init App: ${shortcut.name} - ${auto ? 'auto' : 'manual'}`)
 
         /**
          * Đã tồn tại view này
@@ -46,7 +46,7 @@ export class UniversalService {
 
     async getShortcut(_id: string) {
         try {
-          return this.databaseService.shortcuts.findOneAsync({_id})
+          return this.databaseService.apps.findOneAsync({_id})
         } catch (e) {}
     }
 
@@ -78,7 +78,7 @@ export class UniversalService {
         // view.webContents.openDevTools()
 
         if(auto) {
-            this.mainService.insertViewStack('universal-' + shortcut._id)
+            this.mainService.insertViewStack('app-' + shortcut._id)
         }
         await this.mainService.focusLastView()
     }
@@ -94,7 +94,7 @@ export class UniversalService {
             return
         }
         this.mainService.win.setTopBrowserView(view)
-        this.mainService.insertViewStack('universal-' + _id)
+        this.mainService.insertViewStack('app-' + _id)
         await this.mainService.focusLastView()
     }
 
@@ -127,7 +127,7 @@ export class UniversalService {
 
         // update db
         shortcut.muted = this.views[_id].webContents.audioMuted
-        await this.databaseService.shortcuts.updateAsync({ name: shortcut.name }, {
+        await this.databaseService.apps.updateAsync({ name: shortcut.name }, {
             $set: {
                 muted: shortcut.muted
             }
@@ -150,7 +150,7 @@ export class UniversalService {
         }
         this.mainService.win.removeBrowserView(view)
         delete this.views[_id]
-        this.mainService.insertViewStack('universal-' + _id, true)
+        this.mainService.insertViewStack('app-' + _id, true)
 
         await this.mainService.focusLastView()
 

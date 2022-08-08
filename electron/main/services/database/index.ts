@@ -5,15 +5,15 @@ import type Nedb from "@seald-io/nedb"
 
 @injectable()
 export class DatabaseService {
-    static key: symbol = Symbol.for('DatabaseService')
+    static key: symbol = Symbol.for(DatabaseService.name)
 
     user: Nedb = new Datastore({ filename: 'database/user' })
-    shortcuts: Nedb = new Datastore({ filename: 'database/shortcut' })
+    apps: Nedb = new Datastore({ filename: 'database/apps' })
 
     async init() {
         await Promise.all([
             this.user.loadDatabaseAsync(),
-            this.shortcuts.loadDatabaseAsync()
+            this.apps.loadDatabaseAsync()
         ])
     }
 }

@@ -62,7 +62,7 @@ const vueDevToolsPath = path.join(
 
 app.whenReady().then(async () => {
   await createWindow()
-  await mainService.baseView?.webContents.session.loadExtension(vueDevToolsPath)
+  await mainService.universalView?.webContents.session.loadExtension(vueDevToolsPath)
 })
 
 app.on('window-all-closed', () => {

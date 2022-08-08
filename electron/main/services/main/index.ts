@@ -8,22 +8,17 @@ import {useUniversalService} from "../../composables";
 @injectable()
 export class MainService {
 
-    static key: symbol = Symbol.for('MainService')
+    static key: symbol = Symbol.for(MainService.name)
 
     win?: Electron.BrowserWindow
 
-    baseView?: Electron.BrowserView
+    universalView?: Electron.BrowserView
 
     spotlightView?: Electron.BrowserView
-    opendSpotlight: boolean = false
+    isOpenedSpotlight: boolean = false
 
-    viewStacks: string[] = []
+    stackApps: string[] = []
 
-    constructor() {
-        this.#init()
-    }
-
-    #init() {}
     async createMainWindow() {
 
         console.log('Creating main window')
@@ -45,27 +40,27 @@ export class MainService {
             app.exit(0)
             return
         }
-        await this.injectBaseView()
+        await this.injectUniversalView()
 
         // inject to stacks
-        this.insertViewStack('base-view')
+        this.insertViewStack('universal-view')
         // focus
     }
 
     insertViewStack(view: string, removed?: boolean) {
         // Loại ra khỏi trong stack nếu đã có
-        const _stacks = this.viewStacks.filter(stack => stack !== view)
+        const _stacks = this.stackApps.filter(stack => stack !== view)
 
         if(!removed) {
             _stacks.unshift(view)
         }
 
-        this.viewStacks = _stacks
+        this.stackApps = _stacks
 
         console.log(`🌧 ${removed ? 'Removed' : 'Insert'} View stacks:`, view)
     }
 
-    async injectBaseView() {
+    async injectUniversalView() {
 
         console.log('🌧 Injecting base view')
 
@@ -92,8 +87,8 @@ export class MainService {
             return { action: 'deny' }
         })
 
-        this.baseView = view
-        console.log('🛰 Injected base view ')
+        this.universalView = view
+        console.log('🛰 Injected universal view ')
     }
 
     async buildBaseView(url: string) {
@@ -143,22 +138,22 @@ export class MainService {
         return view
     }
 
-    async toggleBaseView() {
-        if(!this.baseView) {
-            await this.injectBaseView()
-            await this.toggleBaseView()
+    async toggleUniversalView() {
+        if(!this.universalView) {
+            await this.injectUniversalView()
+            await this.toggleUniversalView()
             return
         }
 
-        this.win?.setTopBrowserView(this.baseView)
+        this.win?.setTopBrowserView(this.universalView)
 
-        this.insertViewStack('base-view')
+        this.insertViewStack('universal-view')
         await this.focusLastView()
     }
 
     notifyToBaseView(event: string, data: any) {
         this.win?.emit(event, data)
-        this.baseView?.webContents.send(event, data)
+        this.universalView?.webContents.send(event, data)
     }
 
     /**
@@ -204,9 +199,9 @@ export class MainService {
         }
 
         // đang mở => đóng
-        if(this.opendSpotlight) {
+        if(this.isOpenedSpotlight) {
             console.log('🌧 Close spotlight')
-            this.opendSpotlight = false
+            this.isOpenedSpotlight = false
 
             if(this.spotlightView) {
                 // effect
@@ -227,7 +222,7 @@ export class MainService {
         // đang đóng => mở
         else {
             console.log('🌧 Open spotlight')
-            this.opendSpotlight = true
+            this.isOpenedSpotlight = true
             if(!this.spotlightView) {
                 console.log('🌧 Build spotlight view')
                 await build()
@@ -244,25 +239,25 @@ export class MainService {
     }
 
     async focusLastView() {
-        console.log('🎯Focus last view', this.viewStacks)
+        console.log('🎯Focus last view', this.stackApps)
         if (!this.win) {
             return
         }
-        const lastView: string = this.viewStacks[0]!
-        if(lastView.startsWith('universal-')) {
+        const lastView: string = this.stackApps[0]!
+        if(lastView.startsWith('app-')) {
 
             console.log('🌧 Focus universal view')
             const universalService = useUniversalService()
-            const viewID = lastView.replace('universal-', '')
+            const viewID = lastView.replace('app-', '')
 
             const view = universalService.views[viewID]
             this.win.setTopBrowserView(view)
             view.webContents?.focus()
 
-        } else if(lastView === 'base-view') {
+        } else if(lastView === 'universal-view') {
             console.log('🌧 Focus base view')
-            this.win.setTopBrowserView(this.baseView!)
-            this.baseView?.webContents.focus()
+            this.win.setTopBrowserView(this.universalView!)
+            this.universalView?.webContents.focus()
         } else if(lastView === 'spotlight-view') {
             console.log('🌧 Focus spotlight view')
             this.win.setTopBrowserView(this.spotlightView!)
