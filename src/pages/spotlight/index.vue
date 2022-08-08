@@ -31,6 +31,13 @@
 
         <apps-quick-look v-if="!keyword" />
 
+        <div
+            v-else-if="showLoading"
+            class="px-4 mt-5 pb-4 text-sm"
+        >
+          Đang Tìm Kiếm
+        </div>
+
       </div>
 
     </div>

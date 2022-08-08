@@ -45,13 +45,12 @@ onMounted(() => {
     // Xóa shortcut trong đang xem
     if (items.length === 0) {
       // Xoá hết
-      workspaceStore.setComponentView('workspace')
       workspaceStore.setFocused(undefined)
+      workspaceStore.setComponentView('workspace')
     } else if (workspaceStore.focused?._id === _id) {
       workspaceStore.setFocused(undefined)
-      workspaceStore.setComponentView('app-deleted')
     }
-
+   //  workspaceStore.setComponentView('workspace')
     workspaceStore.setShortcuts(items)
 
   })

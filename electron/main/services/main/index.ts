@@ -50,7 +50,6 @@ export class MainService {
         // inject to stacks
         this.insertViewStack('base-view')
         // focus
-        this
     }
 
     insertViewStack(view: string, removed?: boolean) {
@@ -63,7 +62,7 @@ export class MainService {
 
         this.viewStacks = _stacks
 
-        console.log('🌧 View stacks: ', this.viewStacks)
+        console.log(`🌧 ${removed ? 'Removed' : 'Insert'} View stacks:`, view)
     }
 
     async injectBaseView() {
@@ -184,7 +183,24 @@ export class MainService {
                 return {action: 'deny'}
             })
 
+            this.win!.addBrowserView(view)
+
+            /**
+             * Set bounds
+             * Mặc dù không thích điều này. Những ko change order của windows dc
+             * @link https://github.com/electron/electron/issues/15899
+             */
+            const [width, height] = this.win!.getContentSize()
+            view.setBounds({
+                x: 75,
+                y: 0,
+                width: width - 75,
+                height: height
+            })
+
             this.spotlightView = view
+            console.log('🛰 Injected spotlight view ')
+            this.win?.addBrowserView(this.spotlightView)
         }
 
         // đang mở => đóng
@@ -193,18 +209,14 @@ export class MainService {
             this.opendSpotlight = false
 
             if(this.spotlightView) {
-
-                // not working
-                this.notifyToBaseView('toggle-spotlight', false)
                 // effect
-                this.win?.removeBrowserView(this.spotlightView!)
-
+                // this.win?.removeBrowserView(this.spotlightView!)
+                /**
+                 * Xoá view sẽ tạo ra độ trễ không mong muốn
+                 */
+                // this.spotlightView = undefined
             }
 
-            this.insertViewStack('spotlight-view', true)
-
-            // focus vào view gần nhất
-            await this.focusLastView()
         }
 
         // đang đóng => mở
@@ -215,18 +227,19 @@ export class MainService {
                 console.log('🌧 Build spotlight view')
                 await build()
             } else {
-                this.win?.addBrowserView(this.spotlightView)
+                // this.win?.addBrowserView(this.spotlightView)
             }
-            this.notifyToBaseView('toggle-spotlight', true)
-            this.insertViewStack('spotlight-view')
-
-            // focus vào view gần nhất
-            await this.focusLastView()
+            this.win?.setTopBrowserView(this.spotlightView!)
         }
+
+        this.insertViewStack('spotlight-view', !this.opendSpotlight)
+        this.notifyToBaseView('toggle-spotlight', !this.opendSpotlight)
+        // focus vào view gần nhất
+        await this.focusLastView()
     }
 
     async focusLastView() {
-        console.log('🎯Focus last view')
+        console.log('🎯Focus last view', this.viewStacks)
         if (!this.win) {
             return
         }
@@ -238,10 +251,12 @@ export class MainService {
             const viewID = lastView.replace('universal-', '')
 
             const view = universalService.views[viewID]
+            this.win.setTopBrowserView(view)
             view.webContents?.focus()
 
         } else if(lastView === 'base-view') {
             console.log('🌧 Focus base view')
+            this.win.setTopBrowserView(this.baseView!)
             this.baseView?.webContents.focus()
         }
 

@@ -37,7 +37,6 @@
 
 <script lang="ts" setup>
 import Workspace from "@components/home/Workspace.vue"
-import AppDeleted from "@components/includes/AppDeleted.vue"
 import MyShortcuts from "@components/MyShortcuts.vue"
 
 import UniversalView from "../components/home/UniversalView.vue"
@@ -60,8 +59,15 @@ onMounted(() => {
 
 // Sự kiện phát ra khi có view mới dc tiêm vào
 const focusLastView = () => {
-  window.ipcRenderer.useEventListener('focus-last-view', (view) => {
-    // alert('focus-last-view')
+  window.ipcRenderer.useEventListener('focus-last-view', (view: string) => {
+    if(view.startsWith('universal-')) {
+
+      const _id = view.split('-')[1]
+      const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
+      if(shortcut) {
+        workspaceStore.setFocused(shortcut)
+      }
+    }
   })
 }
 
@@ -73,9 +79,6 @@ const inView = computed<any>(() => {
   switch (workspaceStore.componentView) {
     case 'workspace':
       component = Workspace
-      break
-    case 'app-deleted':
-      component = AppDeleted
       break
     case 'my-shortcuts':
       component = MyShortcuts

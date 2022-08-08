@@ -28,7 +28,7 @@ export const useWorkspaceStore = defineStore('workspace', {
         setFocused(shortcut?: IShortcut) {
             this.focused = shortcut
         },
-        setComponentView(name: 'workspace' | 'app-deleted' | 'my-shortcuts') {
+        setComponentView(name: 'workspace' | 'my-shortcuts') {
             this.componentView = name
         }
     }
