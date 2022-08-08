@@ -1,5 +1,5 @@
 import {ICreateShortcut, IApp} from "@shared/interface/shortcut"
-import {useDatabase, useMainService, useUniversalService} from "../composables";
+import {useDatabase, useMainService, useAppService} from "../composables";
 import {Menu, Notification} from 'electron'
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import {fireNotify} from "./notify.event";
@@ -67,7 +67,7 @@ export const openShortcutContextHanle = async (_id: string) => {
 
     console.log('✅ Context menu for:', _id)
 
-    const universalService = useUniversalService()
+    const universalService = useAppService()
     const dbServices = useDatabase()
 
     const shortcut: IApp = await dbServices.apps.findOneAsync({ _id })

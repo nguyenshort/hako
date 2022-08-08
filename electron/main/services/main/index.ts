@@ -3,7 +3,7 @@ import {app, BrowserView, BrowserWindow, WebPreferences} from "electron";
 import {join} from "path"
 import windowStateKeeper from "electron-window-state";
 import {ROOT_PATH} from "../../index";
-import {useUniversalService} from "../../composables";
+import {useAppService} from "../../composables";
 
 @injectable()
 export class MainService {
@@ -247,7 +247,7 @@ export class MainService {
         if(lastView.startsWith('app-')) {
 
             console.log('🌧 Focus universal view')
-            const universalService = useUniversalService()
+            const universalService = useAppService()
             const viewID = lastView.replace('app-', '')
 
             const view = universalService.views[viewID]

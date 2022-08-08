@@ -11,6 +11,6 @@ export const useMainService = (): MainService => {
     return container.get<MainService>(MainService.key)
 }
 
-export const useUniversalService= (): AppService => {
+export const useAppService= (): AppService => {
     return container.get<AppService>(AppService.key)
 }
