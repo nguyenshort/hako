@@ -17,7 +17,7 @@ export class UniversalService {
         @inject(DatabaseService.key) readonly databaseService: DatabaseService
     ) {}
 
-    async upsertView(_id: string) {
+    async upsertView(_id: string, auto?: boolean) {
 
         if(!this.mainService.win) {
             return
@@ -28,7 +28,7 @@ export class UniversalService {
         if(!shortcut) {
             return
         }
-        console.log('Init view for shortcut:', shortcut.name)
+        console.log(`Init Universal: ${shortcut.name} - ${auto ? 'auto' : 'manual'}`)
 
         /**
          * Đã tồn tại view này
@@ -41,7 +41,7 @@ export class UniversalService {
         const view = await useUniversalView(_id)
         view.webContents.audioMuted = true
 
-        await this.injectView(view, shortcut)
+        await this.injectView(view, shortcut, auto)
     }
 
     async getShortcut(_id: string) {
@@ -50,7 +50,7 @@ export class UniversalService {
         } catch (e) {}
     }
 
-    async injectView(view: BrowserView, shortcut: IShortcut) {
+    async injectView(view: BrowserView, shortcut: IShortcut, auto?: boolean) {
         if(!this.mainService.win) {
             return
         }
@@ -77,7 +77,9 @@ export class UniversalService {
 
         // view.webContents.openDevTools()
 
-        this.mainService.insertViewStack('universal-' + shortcut._id)
+        if(auto) {
+            this.mainService.insertViewStack('universal-' + shortcut._id)
+        }
         await this.mainService.focusLastView()
     }
 

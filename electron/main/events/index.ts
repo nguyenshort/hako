@@ -33,7 +33,7 @@ export const eventsRegister = () => {
     /**
      * Init universal view
      */
-    ipcMain.handle('init-universal-view', (_, _id) => initUniversalViewHandle(_id))
+    ipcMain.handle('init-universal-view', (_, _id, auto) => initUniversalViewHandle(_id, auto))
     ipcMain.handle('toggle-universal-view', (_, _id) => toggleUniversalViewHandle(_id))
     ipcMain.handle('toggle-muted-view', (_, _id) => toggleMutedViewHandle(_id))
 }

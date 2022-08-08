@@ -18,6 +18,7 @@ const workspaceStore = useWorkspaceStore()
 const getShortcuts = async () => {
   const shortcuts = await window.ipcRenderer.getShortcuts()
   workspaceStore.setShortcuts(shortcuts)
+  workspaceStore.setCounterInit(shortcuts.length)
 }
 onMounted(() => getShortcuts())
 

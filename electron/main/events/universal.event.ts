@@ -1,8 +1,8 @@
 import {useUniversalService} from "../composables";
 
-export const initUniversalViewHandle = async (_id: string) => {
+export const initUniversalViewHandle = async (_id: string, auto?: boolean) => {
     const universalService = useUniversalService()
-    await universalService.upsertView(_id)
+    await universalService.upsertView(_id, auto)
 }
 
 export const toggleUniversalViewHandle = async (_id: string) => {

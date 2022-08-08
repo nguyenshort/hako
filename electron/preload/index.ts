@@ -21,6 +21,6 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     showNotification: (title: string, message: string) => ipcRenderer.invoke('show-notification', title, message),
 
     // universal
-    initUniversalView: (args: any) => ipcRenderer.invoke('init-universal-view', args),
+    initUniversalView: (_id: string, auto?: boolean) => ipcRenderer.invoke('init-universal-view', _id, auto),
     toggleUniversalView: (_id: string) => ipcRenderer.invoke('toggle-universal-view', _id),
 })

@@ -56,16 +56,23 @@ onMounted(() => {
   }, 1000)
 })
 
+// Fix when init app => auto switch shortcut
+const counter = ref(0)
+
 
 // Sự kiện phát ra khi có view mới dc tiêm vào
 const focusLastView = () => {
   window.ipcRenderer.useEventListener('focus-last-view', (view: string) => {
     if(view.startsWith('universal-')) {
+      counter.value++
 
-      const _id = view.split('-')[1]
-      const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
-      if(shortcut) {
-        workspaceStore.setFocused(shortcut)
+      // Fix nhấp nháy counter
+      if(counter.value > workspaceStore.shortcuts.length) {
+        const _id = view.split('-')[1]
+        const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
+        if(shortcut) {
+          workspaceStore.setFocused(shortcut)
+        }
       }
     }
   })

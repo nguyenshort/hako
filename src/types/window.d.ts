@@ -14,7 +14,7 @@ export interface ipcRendererAPI {
     toggleBaseView: (visiable: boolean) => Promise<void>,
     useEventListener: (event: IEvent, callback: ICallback) => void,
 
-    initUniversalView: (args: any) => Promise<void>
+    initUniversalView: (_id: string, auto?: boolean) => Promise<void>
     toggleUniversalView: (_id: string) => Promise<void>
 }
 

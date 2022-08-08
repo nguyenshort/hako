@@ -4,16 +4,19 @@
 
 <script lang="ts" setup>
 import {IShortcut} from "@shared/interface/shortcut";
-import {computed, nextTick, onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue"
+import {useWorkspaceStore} from "@store/workspace";
 
 const props = defineProps<{
   shortcut: IShortcut
 }>()
 
+const workspaceStore = useWorkspaceStore()
+
 const loading = ref(true)
 const init = async () => {
   try {
-    await window.ipcRenderer.initUniversalView(props.shortcut._id)
+    await window.ipcRenderer.initUniversalView(props.shortcut._id, workspaceStore.shortcuts.length > workspaceStore.counterInit)
     loading.value = false
   } catch (e) {
   }
