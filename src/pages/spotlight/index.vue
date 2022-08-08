@@ -69,7 +69,6 @@ const target = ref<HTMLDivElement>()
 
 onMounted(() => nextTick(() => {
   window.ipcRenderer.useEventListener('toggle-spotlight', (opened) => {
-    alert(opened)
     showSearch.value = opened
   })
 

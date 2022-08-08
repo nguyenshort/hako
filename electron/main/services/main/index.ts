@@ -215,6 +215,11 @@ export class MainService {
                  * Xoá view sẽ tạo ra độ trễ không mong muốn
                  */
                 // this.spotlightView = undefined
+                this.insertViewStack('spotlight-view', true)
+
+                setTimeout(() => {
+                    this.spotlightView?.webContents.send('toggle-spotlight', false)
+                }, 400)
             }
 
         }
@@ -230,10 +235,10 @@ export class MainService {
                 // this.win?.addBrowserView(this.spotlightView)
             }
             this.win?.setTopBrowserView(this.spotlightView!)
+            this.insertViewStack('spotlight-view')
+            this.spotlightView?.webContents.send('toggle-spotlight', true)
         }
 
-        this.insertViewStack('spotlight-view', !this.opendSpotlight)
-        this.notifyToBaseView('toggle-spotlight', !this.opendSpotlight)
         // focus vào view gần nhất
         await this.focusLastView()
     }
