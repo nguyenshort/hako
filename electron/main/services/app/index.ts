@@ -1,6 +1,6 @@
 import {inject, injectable} from "inversify"
 import type { BrowserView } from "electron";
-import {MainService} from "../main";
+import {UniversalService} from "../universal";
 import {useUniversalView} from "./composables/view";
 import {DatabaseService} from "../database";
 import {IApp} from "@shared/interface/shortcut";
@@ -13,7 +13,7 @@ export class AppService {
     views: Record<string, BrowserView> = {}
 
     constructor(
-        @inject(MainService.key) readonly mainService: MainService,
+        @inject(UniversalService.key) readonly mainService: UniversalService,
         @inject(DatabaseService.key) readonly databaseService: DatabaseService
     ) {}
 
@@ -72,13 +72,13 @@ export class AppService {
         await view.webContents.loadURL(shortcut.url)
 
         this.views[shortcut._id] = view
-        await this.mainService.notifyToBaseView('injected-universal-view', shortcut._id)
+        await this.mainService.notifyToUniversalView('injected-universal-view', shortcut._id)
         console.log('Injected view:', shortcut.name)
 
         // view.webContents.openDevTools()
 
         if(auto) {
-            this.mainService.insertViewStack('app-' + shortcut._id)
+            this.mainService.insertToStackView('app-' + shortcut._id)
         }
         await this.mainService.focusLastView()
     }
@@ -94,7 +94,7 @@ export class AppService {
             return
         }
         this.mainService.win.setTopBrowserView(view)
-        this.mainService.insertViewStack('app-' + _id)
+        this.mainService.insertToStackView('app-' + _id)
         await this.mainService.focusLastView()
     }
 
@@ -135,7 +135,7 @@ export class AppService {
         console.log('Updated shortcut:', shortcut.name)
 
         // notify to base view
-        await this.mainService.notifyToBaseView('after-updated-shortcut', shortcut)
+        await this.mainService.notifyToUniversalView('after-updated-shortcut', shortcut)
     }
 
     async removeView(_id: string) {
@@ -150,7 +150,7 @@ export class AppService {
         }
         this.mainService.win.removeBrowserView(view)
         delete this.views[_id]
-        this.mainService.insertViewStack('app-' + _id, true)
+        this.mainService.insertToStackView('app-' + _id, true)
 
         await this.mainService.focusLastView()
 

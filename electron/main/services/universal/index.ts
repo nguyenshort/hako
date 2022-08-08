@@ -6,9 +6,9 @@ import {ROOT_PATH} from "../../index";
 import {useAppService} from "../../composables";
 
 @injectable()
-export class MainService {
+export class UniversalService {
 
-    static key: symbol = Symbol.for(MainService.name)
+    static key: symbol = Symbol.for(UniversalService.name)
 
     win?: Electron.BrowserWindow
 
@@ -43,11 +43,16 @@ export class MainService {
         await this.injectUniversalView()
 
         // inject to stacks
-        this.insertViewStack('universal-view')
+        this.insertToStackView('universal-view')
         // focus
     }
 
-    insertViewStack(view: string, removed?: boolean) {
+    /**
+     * Thêm bớt view vào stack
+     * @param view
+     * @param removed
+     */
+    insertToStackView(view: string, removed?: boolean) {
         // Loại ra khỏi trong stack nếu đã có
         const _stacks = this.stackApps.filter(stack => stack !== view)
 
@@ -57,22 +62,24 @@ export class MainService {
 
         this.stackApps = _stacks
 
-        console.log(`🌧 ${removed ? 'Removed' : 'Insert'} View stacks:`, view)
+        console.log(`🌧 ${removed ? 'Removed' : 'Insert'} StackView:`, view)
     }
 
+    /**
+     * Tiêm universal view vào window
+     */
     async injectUniversalView() {
 
-        console.log('🌧 Injecting base view')
+        console.log('🌧 Injecting Universal view')
 
         if(!this.win) {
             // Không có windown => create
-            await this.createMainWindow()
             return
         }
 
         const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}`
 
-        const view: Electron.BrowserView|undefined = await this.buildBaseView(url)
+        const view: Electron.BrowserView|undefined = await this.buildVueApp(url)
         if(!view) {
             return
         }
@@ -91,11 +98,13 @@ export class MainService {
         console.log('🛰 Injected universal view ')
     }
 
-    async buildBaseView(url: string) {
+    /**
+     * Tạo view mặc định. Vue App
+     * @param url
+     */
+    async buildVueApp(url: string) {
 
         if(!this.win) {
-            // Không có windown => create
-            await this.createMainWindow()
             return
         }
 
@@ -138,20 +147,21 @@ export class MainService {
         return view
     }
 
-    async toggleUniversalView() {
+    /**
+     * Show app chinhs
+     */
+    showUniversalView() {
         if(!this.universalView) {
-            await this.injectUniversalView()
-            await this.toggleUniversalView()
             return
         }
 
         this.win?.setTopBrowserView(this.universalView)
 
-        this.insertViewStack('universal-view')
-        await this.focusLastView()
+        this.insertToStackView('universal-view')
+        this.focusLastView()
     }
 
-    notifyToBaseView(event: string, data: any) {
+    notifyToUniversalView(event: string, data: any) {
         this.win?.emit(event, data)
         this.universalView?.webContents.send(event, data)
     }
@@ -166,7 +176,7 @@ export class MainService {
         const build = async () => {
             const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}/spotlight`
 
-            const view: Electron.BrowserView = (await this.buildBaseView(url))!
+            const view: Electron.BrowserView = (await this.buildVueApp(url))!
 
             view.webContents.on('did-finish-load', () => {
                 view.webContents.send('main-process-message', new Date().toLocaleString())
@@ -210,7 +220,7 @@ export class MainService {
                  * Xoá view sẽ tạo ra độ trễ không mong muốn
                  */
                 // this.spotlightView = undefined
-                this.insertViewStack('spotlight-view', true)
+                this.insertToStackView('spotlight-view', true)
 
                 setTimeout(() => {
                     this.spotlightView?.webContents.send('toggle-spotlight', false)
@@ -229,7 +239,7 @@ export class MainService {
             } else {
                 // this.win?.addBrowserView(this.spotlightView)
             }
-            this.insertViewStack('spotlight-view')
+            this.insertToStackView('spotlight-view')
             this.spotlightView?.webContents.send('toggle-spotlight', true)
             // this.spotlightView?.webContents?.openDevTools()
         }
@@ -238,7 +248,7 @@ export class MainService {
         await this.focusLastView()
     }
 
-    async focusLastView() {
+    focusLastView() {
         console.log('🎯Focus last view', this.stackApps)
         if (!this.win) {
             return
@@ -264,6 +274,6 @@ export class MainService {
             this.spotlightView?.webContents.focus()
         }
 
-        this.notifyToBaseView('focus-last-view', lastView)
+        this.notifyToUniversalView('focus-last-view', lastView)
     }
 }
