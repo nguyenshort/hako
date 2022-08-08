@@ -3,7 +3,7 @@ import type { BrowserView } from "electron";
 import {MainService} from "../main";
 import {useUniversalView} from "./composables/view";
 import {DatabaseService} from "../database";
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 
 @injectable()
 export class AppService {
@@ -23,7 +23,7 @@ export class AppService {
             return
         }
 
-        const shortcut: IShortcut = await this.getShortcut(_id)
+        const shortcut: IApp = await this.getShortcut(_id)
         // Không có shortcut trong db
         if(!shortcut) {
             return
@@ -50,7 +50,7 @@ export class AppService {
         } catch (e) {}
     }
 
-    async injectView(view: BrowserView, shortcut: IShortcut, auto?: boolean) {
+    async injectView(view: BrowserView, shortcut: IApp, auto?: boolean) {
         if(!this.mainService.win) {
             return
         }
@@ -116,7 +116,7 @@ export class AppService {
             return
         }
 
-        const shortcut: IShortcut = await this.getShortcut(_id)
+        const shortcut: IApp = await this.getShortcut(_id)
         if(!shortcut) {
             // Không có shortcut này
             return

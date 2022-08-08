@@ -3,12 +3,12 @@
 </template>
 
 <script lang="ts" setup>
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 import {nextTick, onMounted, ref} from "vue"
 import {useWorkspaceStore} from "@store/workspace";
 
 const props = defineProps<{
-  shortcut: IShortcut
+  shortcut: IApp
 }>()
 
 const workspaceStore = useWorkspaceStore()

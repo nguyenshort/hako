@@ -89,7 +89,7 @@
 
 <script lang="ts" setup>
 import {useWorkspaceStore} from "@store/workspace";
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
 import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
@@ -98,12 +98,12 @@ import draggable from 'vuedraggable'
 
 const workspaceStore = useWorkspaceStore()
 
-const changeFocused = async (shortcut: IShortcut) => {
+const changeFocused = async (shortcut: IApp) => {
   workspaceStore.setFocused(shortcut)
   await window.ipcRenderer.toggleUniversalView(shortcut._id)
 }
 
-const removeShortcut = async (shortcut: IShortcut) => {
+const removeShortcut = async (shortcut: IApp) => {
   try {
     console.log('removeShortcut', shortcut)
     await window.ipcRenderer.removeShortcut(shortcut._id)
@@ -142,7 +142,7 @@ const openWorkspace = () => {
   window.ipcRenderer.toggleBaseView(true)
 }
 
-const showWsOptions = (shortcut: IShortcut) => {
+const showWsOptions = (shortcut: IApp) => {
   window.ipcRenderer.openShortcutContext(shortcut._id)
 }
 

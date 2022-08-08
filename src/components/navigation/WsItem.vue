@@ -21,11 +21,11 @@
 </template>
 
 <script lang="ts" setup>
-import {IShortcut} from "@shared/interface/shortcut"
+import {IApp} from "@shared/interface/shortcut"
 
 const props = defineProps<{
   hotkey?: string
-  item?: IShortcut
+  item?: IApp
 }>()
 
 </script>

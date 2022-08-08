@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 
 interface State extends Record<string, any> {
-    shortcuts: IShortcut[],
-    focused?: IShortcut,
+    shortcuts: IApp[],
+    focused?: IApp,
     componentView: 'workspace' | 'app-deleted' | 'my-shortcuts'
     counterInit: number
 }
@@ -21,13 +21,13 @@ export const useWorkspaceStore = defineStore('workspace', {
         hasShortcut: (state: State) => state.shortcuts.length > 0
     },
     actions: {
-        setShortcuts(shortcuts: IShortcut[]) {
+        setShortcuts(shortcuts: IApp[]) {
             this.shortcuts = shortcuts
         },
         removeShortcut(id: string) {
             this.shortcuts = this.shortcuts.filter(shortcut => shortcut._id !== id)
         },
-        setFocused(shortcut?: IShortcut) {
+        setFocused(shortcut?: IApp) {
             this.focused = shortcut
         },
         setComponentView(name: 'workspace' | 'my-shortcuts') {

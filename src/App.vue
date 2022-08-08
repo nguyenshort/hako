@@ -10,7 +10,7 @@
 import {onMounted, ref} from "vue";
 import {useWorkspaceStore} from "@store/workspace";
 import SettingModal from "@components/includes/SettingModal.vue";
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 
 // Store
 const workspaceStore = useWorkspaceStore()
@@ -25,7 +25,7 @@ onMounted(() => getShortcuts())
 // Add listener
 onMounted(() => {
   // thêm shortcut
-  window.ipcRenderer.useEventListener("after-shortcut-created", (shortcut: IShortcut) => {
+  window.ipcRenderer.useEventListener("after-shortcut-created", (shortcut: IApp) => {
 
     const _index = workspaceStore.shortcuts.findIndex(item => item._id === shortcut._id)
     if (_index === -1) {
@@ -57,7 +57,7 @@ onMounted(() => {
   })
 
   // Cập nhật
-  window.ipcRenderer.useEventListener("after-updated-shortcut", (shortcut: IShortcut) => {
+  window.ipcRenderer.useEventListener("after-updated-shortcut", (shortcut: IApp) => {
     workspaceStore.setShortcuts(workspaceStore.shortcuts.map(item => item._id === shortcut._id ? shortcut : item))
   })
 })

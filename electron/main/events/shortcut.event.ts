@@ -1,4 +1,4 @@
-import {ICreateShortcut, IShortcut} from "@shared/interface/shortcut"
+import {ICreateShortcut, IApp} from "@shared/interface/shortcut"
 import {useDatabase, useMainService, useUniversalService} from "../composables";
 import {Menu, Notification} from 'electron'
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
@@ -38,7 +38,7 @@ export const removeShortcutsHandle = async (id: string) => {
         const dbs = useDatabase()
         const mainService = useMainService()
 
-        const shortcut: IShortcut = await dbs.apps.findOneAsync({_id: id})
+        const shortcut: IApp = await dbs.apps.findOneAsync({_id: id})
         if(!shortcut) {
             // Không có shortcut này
             return
@@ -70,7 +70,7 @@ export const openShortcutContextHanle = async (_id: string) => {
     const universalService = useUniversalService()
     const dbServices = useDatabase()
 
-    const shortcut: IShortcut = await dbServices.apps.findOneAsync({ _id })
+    const shortcut: IApp = await dbServices.apps.findOneAsync({ _id })
     if(!shortcut) {
         // Không có shortcut này
         return

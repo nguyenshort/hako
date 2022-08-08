@@ -1,5 +1,5 @@
 import {ipcRenderer, contextBridge} from "electron"
-import {ICallback, IShortcut} from "@shared/interface/shortcut"
+import {ICallback, IApp} from "@shared/interface/shortcut"
 
 import './spotlight'
 
@@ -7,7 +7,7 @@ import './spotlight'
 contextBridge.exposeInMainWorld('ipcRenderer', {
 
     // Các event liên quan tới shortcut
-    createShortcut: (shortcut: Omit<IShortcut, 'id'>) => ipcRenderer.invoke('create-shortcut', shortcut),
+    createShortcut: (shortcut: Omit<IApp, 'id'>) => ipcRenderer.invoke('create-shortcut', shortcut),
     getShortcuts: () => ipcRenderer.invoke('gets-shortcut'),
     removeShortcut: (id: string) => ipcRenderer.invoke('remove-shortcut', id),
     openShortcutContext: (id: string) => ipcRenderer.invoke('open-shortcut-context', id),

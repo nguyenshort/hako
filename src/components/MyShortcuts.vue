@@ -50,14 +50,14 @@ import ExportData from "@components/ExportData.vue"
 import {useWorkspaceStore} from "@store/workspace";
 import {ref} from "vue"
 import draggable from 'vuedraggable'
-import {IShortcut} from "@shared/interface/shortcut";
+import {IApp} from "@shared/interface/shortcut";
 
 const workspaceStore = useWorkspaceStore()
 
 
 const drag = ref(false)
 
-const showWsOptions = (shortcut: IShortcut) => {
+const showWsOptions = (shortcut: IApp) => {
   window.ipcRenderer.openShortcutContext(shortcut._id)
 }
 

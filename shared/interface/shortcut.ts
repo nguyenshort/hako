@@ -1,4 +1,4 @@
-export interface IShortcut {
+export interface IApp {
     _id: string
     name: string
     icon: string
@@ -8,6 +8,6 @@ export interface IShortcut {
     isCustom?: boolean
 }
 
-export type ICreateShortcut = Pick<IShortcut, 'name' | 'icon' | 'url' | 'isCustom'>
+export type ICreateShortcut = Pick<IApp, 'name' | 'icon' | 'url' | 'isCustom'>
 
 export type ICallback = (...args: any[]) => void|Promise<void>
