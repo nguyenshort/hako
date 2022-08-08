@@ -1,6 +1,6 @@
 import {ICreateShortcut, IApp} from "@shared/interface/shortcut"
-import {useDatabase, useMainService, useAppService} from "../composables";
-import {Menu, Notification} from 'electron'
+import {useAppService, useDatabase, useMainService} from "../composables";
+import {Menu} from 'electron'
 import type { MenuItem, MenuItemConstructorOptions } from 'electron'
 import {fireNotify} from "./notify.event";
 
