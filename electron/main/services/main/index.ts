@@ -234,9 +234,9 @@ export class MainService {
             } else {
                 // this.win?.addBrowserView(this.spotlightView)
             }
-            this.win?.setTopBrowserView(this.spotlightView!)
             this.insertViewStack('spotlight-view')
             this.spotlightView?.webContents.send('toggle-spotlight', true)
+            // this.spotlightView?.webContents?.openDevTools()
         }
 
         // focus vào view gần nhất
@@ -263,6 +263,10 @@ export class MainService {
             console.log('🌧 Focus base view')
             this.win.setTopBrowserView(this.baseView!)
             this.baseView?.webContents.focus()
+        } else if(lastView === 'spotlight-view') {
+            console.log('🌧 Focus spotlight view')
+            this.win.setTopBrowserView(this.spotlightView!)
+            this.spotlightView?.webContents.focus()
         }
 
         this.notifyToBaseView('focus-last-view', lastView)

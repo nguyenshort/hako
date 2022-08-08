@@ -19,6 +19,7 @@
 
           <input
               v-model="keyword"
+              ref="inputRef"
               type="text"
               class="w-full bg-transparent focus:outline-0 placeholder-slate-500 pl-4 pr-3 h-14"
               placeholder="Tìm kiếm..."
@@ -79,6 +80,19 @@ onMounted(() => nextTick(() => {
   }
 }))
 
+
+const inputRef = ref<HTMLInputElement>()
+watch(showSearch, (val, oldValue) => {
+
+  if(val && !oldValue) {
+    nextTick(() => {
+      setTimeout(() => {
+        inputRef.value?.focus()
+      }, 300)
+    })
+  }
+
+})
 </script>
 
 <style lang="scss">

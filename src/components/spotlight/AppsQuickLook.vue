@@ -6,7 +6,7 @@
       <div
           v-for="item in workspaceStore.shortcuts"
           :key="item._id"
-          class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4"
+          class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4 cursor-pointer"
       >
         <div class="h-[60px] flex items-center justify-center relative z-10">
           <img
@@ -26,7 +26,7 @@
 
     </div>
 
-    <p class="px-4 pb-2 text-sm">Ứng dụng bạn đã cài sẽ xuất hiện ở đây</p>
+    <p class="mx-4 py-2 text-xs border-t border-gray-700">Ứng dụng bạn đã cài sẽ xuất hiện ở đây</p>
   </div>
 </template>
 
