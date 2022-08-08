@@ -1,7 +1,7 @@
 import {App} from "vue"
 import {ICallback} from "@shared/interface/shortcut"
 
-type IEvent = 'after-shortcut-created' | 'after-shortcut-removed' | 'after-updated-shortcut' | string
+type IEvent = 'after-shortcut-created' | 'after-shortcut-removed' | 'after-updated-shortcut' | 'toggle-spotlight' | 'focus-last-view' | string
 
 export interface ipcRendererAPI {
     showNotification: (title: string, message: string) => Promise<void>

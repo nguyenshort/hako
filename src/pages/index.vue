@@ -59,16 +59,13 @@ onMounted(() => {
 
 
 // Sự kiện phát ra khi có view mới dc tiêm vào
-const listenUniversalInjected = () => {
-  // window.ipcRenderer.useEvent('injected-universal-view', (_id: string) => {
-  //   console.log('Injected:', _id)
-  //   const shortcut = workspaceStore.shortcuts.find(item => item._id === _id)
-  //   if(!shortcut) return
-  //   workspaceStore.setFocusedShortcut(shortcut)
-  // })
+const focusLastView = () => {
+  window.ipcRenderer.useEventListener('focus-last-view', (view) => {
+    // alert('focus-last-view')
+  })
 }
 
-onMounted(() => nextTick( () => listenUniversalInjected()))
+onMounted(() => nextTick( () => focusLastView()))
 
 
 const inView = computed<any>(() => {

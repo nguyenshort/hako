@@ -3,6 +3,7 @@ import {app, BrowserView, BrowserWindow, WebPreferences} from "electron";
 import {join} from "path"
 import windowStateKeeper from "electron-window-state";
 import {ROOT_PATH} from "../../index";
+import {useUniversalService} from "../../composables";
 
 @injectable()
 export class MainService {
@@ -15,6 +16,8 @@ export class MainService {
 
     spotlightView?: Electron.BrowserView
     opendSpotlight: boolean = false
+
+    viewStacks: string[] = []
 
     constructor() {
         this.#init()
@@ -43,6 +46,24 @@ export class MainService {
             return
         }
         await this.injectBaseView()
+
+        // inject to stacks
+        this.insertViewStack('base-view')
+        // focus
+        this
+    }
+
+    insertViewStack(view: string, removed?: boolean) {
+        // Loại ra khỏi trong stack nếu đã có
+        const _stacks = this.viewStacks.filter(stack => stack !== view)
+
+        if(!removed) {
+            _stacks.unshift(view)
+        }
+
+        this.viewStacks = _stacks
+
+        console.log('🌧 View stacks: ', this.viewStacks)
     }
 
     async injectBaseView() {
@@ -123,16 +144,17 @@ export class MainService {
         return view
     }
 
-    async toggleBaseView(visible: boolean) {
+    async toggleBaseView() {
         if(!this.baseView) {
             await this.injectBaseView()
-            await this.toggleBaseView(visible)
+            await this.toggleBaseView()
             return
         }
 
-        if(visible) {
-           this.win?.setTopBrowserView(this.baseView)
-        }
+        this.win?.setTopBrowserView(this.baseView)
+
+        this.insertViewStack('base-view')
+        await this.focusLastView()
     }
 
     notifyToBaseView(event: string, data: any) {
@@ -171,10 +193,18 @@ export class MainService {
             this.opendSpotlight = false
 
             if(this.spotlightView) {
-                this.win?.removeBrowserView(this.spotlightView)
+
+                // not working
+                this.notifyToBaseView('toggle-spotlight', false)
+                // effect
+                this.win?.removeBrowserView(this.spotlightView!)
+
             }
 
-            return
+            this.insertViewStack('spotlight-view', true)
+
+            // focus vào view gần nhất
+            await this.focusLastView()
         }
 
         // đang đóng => mở
@@ -187,8 +217,34 @@ export class MainService {
             } else {
                 this.win?.addBrowserView(this.spotlightView)
             }
+            this.notifyToBaseView('toggle-spotlight', true)
+            this.insertViewStack('spotlight-view')
 
-            // this.spotlightView?.webContents?.openDevTools()
+            // focus vào view gần nhất
+            await this.focusLastView()
         }
+    }
+
+    async focusLastView() {
+        console.log('🎯Focus last view')
+        if (!this.win) {
+            return
+        }
+        const lastView: string = this.viewStacks[0]!
+        if(lastView.startsWith('universal-')) {
+
+            console.log('🌧 Focus universal view')
+            const universalService = useUniversalService()
+            const viewID = lastView.replace('universal-', '')
+
+            const view = universalService.views[viewID]
+            view.webContents?.focus()
+
+        } else if(lastView === 'base-view') {
+            console.log('🌧 Focus base view')
+            this.baseView?.webContents.focus()
+        }
+
+        this.notifyToBaseView('focus-last-view', lastView)
     }
 }

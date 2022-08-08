@@ -1,7 +1,14 @@
 <template>
   <div id="spotlight" class="min-h-screen relative flex justify-center">
 
-    <div id="searchbox" class="max-w-[650px] w-full px-7 mt-[30vh]">
+    <div
+        ref="target"
+        id="searchbox"
+        class="max-w-[650px] w-full px-7 mt-[30vh] transition duration-300 ease-in-out"
+        :class="{
+          'scale-95 opacity-0 invisible': !showSearch,
+        }"
+    >
 
       <div
           class="rounded-md w-full relative"
@@ -15,38 +22,14 @@
               type="text"
               class="w-full bg-transparent focus:outline-0 placeholder-slate-500 pl-4 pr-3 h-14"
               placeholder="Tìm kiếm..."
+              @keyup="onKeydown"
           />
 
           <button class="bg-gray-700 rounded-md" type="reset" aria-label="Cancel">Cancel</button>
 
         </form>
 
-        <div
-            v-if="!keyword"
-            class="flex flex-wrap pt-5 pb-2"
-        >
-          <div
-              v-for="item in workspaceStore.shortcuts"
-              :key="item._id"
-              class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4"
-          >
-            <div class="h-[60px] flex items-center justify-center relative z-10">
-              <img
-                  :src="item.icon"
-                  alt=""
-                  class="w-[40px] max-h-[40px] h-auto logo"
-              />
-            </div>
-
-            <div class="flex items-center relative z-10">
-              <p class="text-xs font-medium">
-                {{ item.name }}
-              </p>
-            </div>
-
-          </div>
-
-        </div>
+        <apps-quick-look v-if="!keyword" />
 
       </div>
 
@@ -56,17 +39,43 @@
 </template>
 
 <script lang="ts" setup>
-
-import {useWorkspaceStore} from "@store/workspace";
-import {ref} from "vue";
-
-const workspaceStore = useWorkspaceStore()
+import {nextTick, onMounted, ref, watch} from "vue"
+import {useDebounceFn, useElementVisibility} from '@vueuse/core'
+import AppsQuickLook from "@components/spotlight/AppsQuickLook.vue"
 
 const keyword = ref('')
+const showLoading = ref(false)
+
+const searchFn = useDebounceFn(async () => {
+  // Todo: Emit search event
+}, 1000, { maxWait: 5000 })
+
+const onKeydown = () => {
+  if(keyword.value) {
+    showLoading.value = true
+    searchFn()
+  }
+}
+
+const showSearch = ref(false)
+const target = ref<HTMLDivElement>()
+
+onMounted(() => nextTick(() => {
+  window.ipcRenderer.useEventListener('toggle-spotlight', (opened) => {
+    alert(opened)
+    showSearch.value = opened
+  })
+
+  if(!showSearch.value) {
+    setTimeout(() => {
+      showSearch.value = true
+    }, 400)
+  }
+}))
 
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 #spotlight {
   background-color: rgb(15 23 42/.8);
   #searchbox {

@@ -75,7 +75,10 @@ export class UniversalService {
         await this.mainService.notifyToBaseView('injected-universal-view', shortcut._id)
         console.log('Injected view:', shortcut.name)
 
-        view.webContents.openDevTools()
+        // view.webContents.openDevTools()
+
+        this.mainService.insertViewStack('universal-' + shortcut._id)
+        await this.mainService.focusLastView()
     }
 
     async togggleView(_id: string) {
@@ -89,6 +92,8 @@ export class UniversalService {
             return
         }
         this.mainService.win.setTopBrowserView(view)
+        this.mainService.insertViewStack('universal-' + _id)
+        await this.mainService.focusLastView()
     }
 
     /**
@@ -133,15 +138,20 @@ export class UniversalService {
 
     async removeView(_id: string) {
         console.log('Remove view:', _id)
-        if(!this.mainService.win) {
+        if (!this.mainService.win) {
             return
         }
         const view = this.views[_id]
-        if(!view) {
+        if (!view) {
             // Không có view này
             return
         }
         this.mainService.win.removeBrowserView(view)
         delete this.views[_id]
+        this.mainService.insertViewStack('universal-' + _id, true)
+
+        await this.mainService.focusLastView()
+
     }
+
 }

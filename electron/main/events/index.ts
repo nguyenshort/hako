@@ -28,7 +28,7 @@ export const eventsRegister = () => {
     /**
      * Base View
      */
-    ipcMain.handle('toggle-base-view', async (_, visiable: boolean) => toggleBaseView(visiable))
+    ipcMain.handle('toggle-base-view', async (_) => toggleBaseView())
 
     /**
      * Init universal view

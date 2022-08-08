@@ -55,9 +55,9 @@ export const removeShortcutsHandle = async (id: string) => {
 
 
 
-export const toggleBaseView = async (visiable: boolean) => {
+export const toggleBaseView = async () => {
     const mainService = useMainService()
-    await mainService.toggleBaseView(visiable)
+    await mainService.toggleBaseView()
 }
 
 export const openShortcutContextHanle = async (_id: string) => {
