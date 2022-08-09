@@ -9,5 +9,3 @@ export interface IApp {
 }
 
 export type IAppInput = Partial<Omit<IApp, '_id'>>
-
-export type ICallback = (...args: any[]) => void|Promise<void>

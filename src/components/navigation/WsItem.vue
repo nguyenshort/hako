@@ -21,7 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import {IApp} from "@shared/models/app"
+
+import {IApp} from "../../../shared/models/app";
 
 const props = defineProps<{
   hotkey?: string

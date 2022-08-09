@@ -16,7 +16,7 @@ const workspaceStore = useMainStore()
 const loading = ref(true)
 const init = async () => {
   try {
-    await window.appFn.upsert(props.app._id, workspaceStore.apps.length > workspaceStore.counterInit)
+    await window.appFn.pushApp(props.app._id, workspaceStore.apps.length > workspaceStore.counterInit)
     loading.value = false
   } catch (e) {
   }

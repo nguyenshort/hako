@@ -1,6 +1,3 @@
-{"name":"Google","icon":"/images/google.png","url":"https://google.com","isCustom":false,"_id":"BLafkiE6kg627d9B"}
-{"name":"Google","icon":"/images/google.png","url":"https://google.com","isCustom":false,"_id":"JORMUntMza9nOZao"}
-{"name":"Google","icon":"/images/google.png","url":"https://google.com","isCustom":false,"_id":"pfdH52y9OIzy3B2l"}
-{"name":"Instagram","icon":"/images/instagram.png","url":"https://instagram.com","isCustom":false,"_id":"xFnrQ2kKrUysc3ed"}
-{"name":"Youtube","icon":"/images/youtube.png","url":"https://youtube.com","isCustom":false,"_id":"xUnjQZOS3mIxwL4k","muted":false}
-{"name":"Google","icon":"/images/google.png","url":"https://google.com","isCustom":false,"_id":"qsIqyZV27XFZ453J"}
+{"name":"Twitter","icon":"/images/twitter.png","url":"https://twitter.com","_id":"z6dU23kDhl2mgBMR"}
+{"$$deleted":true,"_id":"z6dU23kDhl2mgBMR"}
+{"name":"Instagram","icon":"/images/instagram.png","url":"https://instagram.com","_id":"f2U33oFZm3TPof4V"}

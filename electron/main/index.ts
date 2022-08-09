@@ -4,9 +4,7 @@ import { release, homedir } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
 import * as path from "path"
-import {useDatabase, useMainService} from "./composables";
-
-import {AppChanel} from "@shared/chanel/app";
+import {useDatabase, useMainServie} from "./composables/instance";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -33,7 +31,7 @@ export const ROOT_PATH = {
 
 
 const databaseService = useDatabase()
-const mainService = useMainService()
+const mainService = useMainServie()
 
 // Here, you can also use other preload
 // const preload = join(__dirname, '../preload/index.js')
@@ -51,7 +49,7 @@ async function createWindow() {
 
   eventsRegister()
 
-  await mainService.createMainWindow()
+  await mainService.init()
 }
 
 /**

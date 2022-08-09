@@ -3,8 +3,7 @@ import {IApp} from "../../shared/models/app";
 
 interface State extends Record<string, any> {
     apps: IApp[],
-    focused?: IApp,
-    componentView: 'workspace' | 'app-deleted' | 'my-shortcuts'
+    stackViews: string[],
     counterInit: number
 }
 
@@ -13,12 +12,12 @@ interface State extends Record<string, any> {
 export const useMainStore = defineStore('workspace', {
     state: (): State => ({
         apps: [],
-        focused: undefined,
-        componentView: 'workspace',
-        counterInit: 0
+        counterInit: 0,
+        stackViews: []
     }),
     getters: {
-        hasApp: (state: State) => state.apps.length > 0
+        hasApp: (state: State) => state.apps.length > 0,
+        activeView: (state: State) => state.stackViews[0],
     },
     actions: {
         setApps(shortcuts: IApp[]) {
@@ -27,14 +26,15 @@ export const useMainStore = defineStore('workspace', {
         removeApp(id: string) {
             this.apps = this.apps.filter(shortcut => shortcut._id !== id)
         },
-        setFocused(shortcut?: IApp) {
-            this.focused = shortcut
-        },
-        setComponentView(name: 'workspace' | 'my-shortcuts') {
-            this.componentView = name
-        },
         setCounterInit(counter: number) {
             this.counterInit = counter
+        },
+        setStackViews(stackViews: string[]) {
+            this.stackViews = stackViews
+        },
+        pushStackView(route: string) {
+            const _stacks = this.stackViews.filter(stack => stack !== route)
+            this.stackViews = [route, ..._stacks]
         }
     }
 })

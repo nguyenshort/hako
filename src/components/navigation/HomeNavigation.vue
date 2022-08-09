@@ -6,11 +6,11 @@
       <div class="h-8"></div>
       <ws-item
           :disbale="false"
-          @click="openWorkspace()"
+          @click="toRoute('/')"
           class="last:before:hidden"
           hotkey="⌘N"
           :class="{
-            _active: workspaceStore.componentView === 'workspace' && !workspaceStore.focused
+            _active: mainStore.activeView === '/',
           }"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
     <draggable
         id="list-actions"
         ref="actionsRef"
-        v-model="workspaceStore.apps"
+        v-model="mainStore.apps"
         group="people"
         item-key="_id"
         class="overflow-y-auto scrollbar-hide h-auto"
@@ -37,10 +37,10 @@
             :item="element"
             :hotkey="`⌘${index + 1}`"
             :class="{
-            _active: workspaceStore.focused?._id === element._id,
-            'opacity-75': !(workspaceStore.focused?._id === element._id)
-          }"
-            @click="changeFocused(element)"
+              _active: mainStore.activeView === element._id,
+              'opacity-75': mainStore.activeView !== element._id
+            }"
+            @click="toRoute(element._id)"
             @contextmenu.prevent="showWsOptions(element)"
         ></ws-item>
       </template>
@@ -51,13 +51,13 @@
       <div class="h-6"></div>
 
       <ws-item
-          v-if="workspaceStore.hasShortcut"
-          :hotkey="`${workspaceStore.apps.length}`"
+          v-if="mainStore.hasApp"
+          :hotkey="`${mainStore.apps.length}`"
           class="apps"
           :class="{
-            _active: workspaceStore.componentView === 'my-shortcuts' && !workspaceStore.focused
-          }"
-          @click="openMyShortcuts"
+              _active: mainStore.activeView === '/apps'
+           }"
+          @click="toRoute('/apps')"
       >
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M201.14 64L256 32l54.86 32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 32v80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M310.86 448L256 480l-54.86-32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M256 480v-80"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M64 207.51V144l53.15-31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 144l67.29 40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M448 304.49V368l-53.15 31.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 368l-67.29-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M117.15 400L64 368v-63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M64 368l66.64-40"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M394.85 112.49L448 144v63.51"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M448 144l-67.29 40M256 320v-64l54.86-32M256 256l-54.86-32"/></svg>
       </ws-item>
@@ -67,7 +67,7 @@
         <svg v-else width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path d="M160 136c0-30.62 4.51-61.61 16-88C99.57 81.27 48 159.32 48 248c0 119.29 96.71 216 216 216 88.68 0 166.73-51.57 200-128-26.39 11.49-57.38 16-88 16-119.29 0-216-96.71-216-216z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
       </ws-item>
 
-      <ws-item @click="openSetting()">
+      <ws-item @click="toRoute('/settings')">
         <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M368 128h80M64 128h240M368 384h80M64 384h240M208 256h240M64 256h80"/><circle cx="336" cy="128" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="176" cy="256" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="336" cy="384" r="32" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>
       </ws-item>
 
@@ -90,31 +90,13 @@
 <script lang="ts" setup>
 import {useMainStore} from "@store/workspace";
 import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
-import {useEmitter} from "@nguyenshort/vue3-mitt"
 import draggable from 'vuedraggable'
 import {IApp} from "../../../shared/models/app";
-import {useAppFn, useHeplFn, useMainFn} from "@composables/useElectron";
+import {useAppBridge} from "@composables/useAppBridge";
 
-const workspaceStore = useMainStore()
-
-const changeFocused = async (shortcut: IApp) => {
-  workspaceStore.setFocused(shortcut)
-  await useAppFn().show(shortcut._id)
-}
-
-const removeShortcut = async (app: IApp) => {
-  try {
-    console.log('removeShortcut', app)
-    await useAppFn().remove(app._id)
-    workspaceStore.removeApp(app._id)
-    await useHeplFn().showNotification('Shortcut removed', 'success')
-  } catch (e) {
-   // Todo: Error
-  }
-}
-
+const mainStore = useMainStore()
 
 const { height: heightWindow } = useWindowSize()
 const fixRef = ref<HTMLDivElement>()
@@ -132,42 +114,13 @@ const toggleColorMode = () => {
   mode.value === 'dark' ? mode.value = 'light' : mode.value = 'dark'
 }
 
-/**
- * Mở tab chọn ứng dụng
- * B1: Đổi tab
- * B2: Thay đổi index thông qua main process
- */
-const openWorkspace = () => {
-  workspaceStore.setFocused(undefined)
-  workspaceStore.setComponentView('workspace')
-  useMainFn().show()
+const toRoute = async (route: string) => {
+  mainStore.pushStackView(route)
+  await useAppBridge().pushRoute(route)
 }
 
 const showWsOptions = (shortcut: IApp) => {
-  useAppFn().openContext(shortcut._id)
-}
-
-const emitter = useEmitter()
-const openSetting = () => {
-
-  if(workspaceStore.focused) {
-    useMainFn().show()
-    workspaceStore.setComponentView('workspace')
-    workspaceStore.setFocused(undefined)
-
-    setTimeout(() => {
-      emitter.emit('settingModal')
-    }, 300)
-
-  } else {
-    emitter.emit('settingModal')
-  }
-}
-
-const openMyShortcuts = () => {
-  workspaceStore.setFocused(undefined)
-  workspaceStore.setComponentView('my-shortcuts')
-  useMainFn().show()
+  useAppBridge().openAppContext(shortcut._id)
 }
 
 // drag/drop

@@ -10,7 +10,7 @@ import {join} from "path";
  * B2: Custom session
  * Todo: Fix secure context error
  */
-export const useUniversalView = async (id: string) => {
+export const useAppView = async (id: string) => {
 
     // Custom: UserAgent. Đây là object
     const userAgent = new UserAgent().toString()
@@ -36,7 +36,7 @@ export const useUniversalView = async (id: string) => {
 const useWebPrefs = (): WebPreferences => {
 
     // ../preload/index.js
-    const preload = join(__dirname, '../preload/universal.js')
+    const preload = join(__dirname, '../preload/index.js')
 
     return {
         spellcheck: false,

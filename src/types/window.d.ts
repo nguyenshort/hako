@@ -1,13 +1,9 @@
 import {App} from "vue"
-import {appAPIS, helpAPIS, mainAPIS} from "../../shared/api";
-
-type IEvent = 'after-shortcut-created' | 'after-shortcut-removed' | 'after-updated-shortcut' | 'toggle-spotlight' | 'focus-last-view' | string
+import {appBridge} from "../../electron/preload";
 
 declare global {
     interface Window {
         $vue: App<Element>
-        appFn: typeof appAPIS
-        helpFn: typeof helpAPIS
-        mainFn: typeof mainAPIS
+        appBridge: typeof appBridge
     }
 }

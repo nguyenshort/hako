@@ -39,9 +39,7 @@ export default defineConfig({
         //   app: join(__dirname, 'electron/preload/universal.ts'),
         // },
         input: [
-            join(__dirname, 'electron/preload/index.ts'),
-            join(__dirname, 'electron/preload/universal.ts'),
-            join(__dirname, 'electron/preload/app.ts')
+            join(__dirname, 'electron/preload/index.ts')
         ],
         vite: {
           build: {

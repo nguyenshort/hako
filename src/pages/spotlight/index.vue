@@ -69,9 +69,9 @@ const showSearch = ref(false)
 const target = ref<HTMLDivElement>()
 
 onMounted(() => nextTick(() => {
-  window.ipcRenderer.useEventListener('toggle-spotlight', (opened) => {
-    showSearch.value = opened
-  })
+  // window.ipcRenderer.useEventListener('toggle-spotlight', (opened) => {
+  //   showSearch.value = opened
+  // })
 
   if(!showSearch.value) {
     setTimeout(() => {

@@ -56,6 +56,7 @@
 import {computed, reactive} from "vue";
 import {useWindowSize} from "@vueuse/core";
 import {IAppInput} from "../../shared/models/app";
+import {useAppBridge} from "@composables/useAppBridge";
 
 const apps = reactive<IAppInput[]>([
   {
@@ -92,10 +93,9 @@ const apps = reactive<IAppInput[]>([
 
 const addHandle = async (app: IAppInput) => {
   try {
-    await window.appFn.create(Object.assign({}, app))
+    await useAppBridge().createApp(Object.assign({}, app))
   } catch (e) {
-    console.log(e)
-    // Todo: Error
+    //TODO: handle error
   }
 }
 

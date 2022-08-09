@@ -7,6 +7,7 @@ import {createRouter, createWebHistory} from "vue-router";
 // We'll talk about nested routes later.
 const routes = [
     { path: '/', component: () => import('../pages/index.vue') },
+    { path: '/home', component: () => import('../pages/index.vue') },
     { path: '/spotlight', component: () => import('../pages/spotlight/index.vue') },
 ]
 

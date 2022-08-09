@@ -34,14 +34,14 @@ import UniversalView from "@components/includes/AppView.vue"
 import HomeNavigation from "@components/navigation/HomeNavigation.vue"
 
 import {useMainStore} from "@store/workspace"
-import {nextTick, onMounted, ref} from "vue";
-import {IApp} from "../../shared/models/app";
+import {onMounted, ref} from "vue";
 import HomeBody from "@components/home/HomeBody.vue";
 import HomeLoading from "@components/home/HomeLoading.vue";
-import {AppEvents} from "../../shared/events/app.events";
-import {useHeplFn} from "@composables/useElectron";
+import {useAppBridge} from "@composables/useAppBridge";
+import {IApp} from "../../shared/models/app";
 
 const mainStore = useMainStore()
+const appBridge = useAppBridge()
 
 // Preload animation
 const showPloading = ref(true)
@@ -51,77 +51,75 @@ onMounted(() => {
   }, 1000)
 })
 
-const getApps = async () => {
-  const shortcuts = await window.appFn.get()
-  mainStore.setApps(shortcuts)
-  mainStore.setCounterInit(shortcuts.length)
+const getMyApps = async () => {
+  const apps = await appBridge.getMyApps()
+  mainStore.setApps(apps)
+  mainStore.setCounterInit(apps.length)
 }
-onMounted(() => getApps())
+onMounted(() => getMyApps())
 
-// Add listener
+// Listener
 onMounted(() => {
-  // thêm app
-  window.helpFn.useEventListener(AppEvents.CREATED, (shortcut: IApp) => {
-
-    const _index = mainStore.apps.findIndex(item => item._id === shortcut._id)
+  // Sự kiện app được thêm vào
+  appBridge.addEventListener('app:created', (app: IApp) => {
+    const _index = mainStore.apps.findIndex(item => item._id === app._id)
     if (_index === -1) {
-      useHeplFn().showNotification('App created', 'success')
-      mainStore.setApps([...mainStore.apps, shortcut])
+      appBridge.pushNotify('App created', 'success')
+      mainStore.setApps([...mainStore.apps, app])
     } else {
-      mainStore.apps[_index] = shortcut
+      mainStore.apps[_index] = app
     }
-
-    // Auto focus vào shortcut mới
-    mainStore.setFocused(shortcut)
   })
 
-  // xóa shortcut
-  window.helpFn.useEventListener(AppEvents.REMOVED, (_id: string) => {
-
-    const items = mainStore.apps.filter(item => item._id !== _id)
-
-    // Xóa shortcut trong đang xem
-    if (items.length === 0) {
-      // Xoá hết
-      mainStore.setFocused(undefined)
-      mainStore.setComponentView('workspace')
-    } else if (mainStore.focused?._id === _id) {
-      mainStore.setFocused(undefined)
+  // Sự kiện app được xóa
+  appBridge.addEventListener('app:removed', (_id: string) => {
+    const _index = mainStore.apps.findIndex(item => item._id === _id)
+    if (_index !== -1) {
+      appBridge.pushNotify('App deleted', 'success')
+      mainStore.apps.splice(_index, 1)
     }
-    //  workspaceStore.setComponentView('workspace')
-    mainStore.setApps(items)
-
-    useHeplFn().showNotification('App removed', 'success')
-
-  })
-
-  // Cập nhật
-  window.helpFn.useEventListener("after-updated-shortcut", (shortcut: IApp) => {
-    mainStore.setApps(mainStore.apps.map(item => item._id === shortcut._id ? shortcut : item))
   })
 })
 
-// Fix when init app => auto switch shortcut
-const counter = ref(0)
-
-
-// Sự kiện phát ra khi có view mới dc tiêm vào
-const focusLastView = () => {
-  window.helpFn.useEventListener('focus-last-view', (view: string) => {
-    if(view.startsWith('universal-')) {
-      counter.value++
-
-      // Fix nhấp nháy counter
-      if(counter.value > mainStore.apps.length) {
-        const _id = view.split('-')[1]
-        const shortcut = mainStore.apps.find(item => item._id === _id)
-        if(shortcut) {
-          mainStore.setFocused(shortcut)
-        }
-      }
-    }
-  })
-}
-
-onMounted(() => nextTick( () => focusLastView()))
+// // Add listener
+// onMounted(() => {
+//   // thêm app
+//   window.helpFn.useEventListener(AppEvents.CREATED, (shortcut: IApp) => {
+//
+//     const _index = mainStore.apps.findIndex(item => item._id === shortcut._id)
+//     if (_index === -1) {
+//       useHeplFn().showNotification('App created', 'success')
+//       mainStore.setApps([...mainStore.apps, shortcut])
+//     } else {
+//       mainStore.apps[_index] = shortcut
+//     }
+//
+//     // Auto focus vào shortcut mới
+//     mainStore.setFocused(shortcut._id)
+//   })
+//
+//   // xóa shortcut
+//   window.helpFn.useEventListener(AppEvents.REMOVED, (_id: string) => {
+//
+//     const items = mainStore.apps.filter(item => item._id !== _id)
+//
+//     // Xóa shortcut trong đang xem
+//     if (items.length === 0) {
+//       // Xoá hết
+//       mainStore.setFocused('')
+//     } else if (mainStore.focused === _id) {
+//       mainStore.setFocused('home')
+//     }
+//     //  workspaceStore.setComponentView('workspace')
+//     mainStore.setApps(items)
+//
+//     useHeplFn().showNotification('App removed', 'success')
+//
+//   })
+//
+//   // Cập nhật
+//   useHeplFn().useEventListener("focused:change", (views: string[]) => {
+//     mainStore.setStackViews(views)
+//   })
+// })
 </script>

@@ -1,0 +1,46 @@
+import {injectable} from "inversify"
+
+import Datastore from '@seald-io/nedb'
+import type Nedb from "@seald-io/nedb"
+import {IApp, IAppInput} from "../../../shared/models/app";
+
+@injectable()
+export class DatabaseService {
+    static key: symbol = Symbol.for(DatabaseService.name)
+
+    user: Nedb = new Datastore<IApp>({ filename: 'database/user' })
+    app: Nedb = new Datastore({ filename: 'database/apps' })
+
+    async init() {
+        await Promise.all([
+            this.user.loadDatabaseAsync(),
+            this.app.loadDatabaseAsync()
+        ])
+    }
+
+    /**
+     * App Query
+     */
+    async apps() {
+        return this.app.findAsync({})
+            .sort({order: 1})
+    }
+
+    async createApp(input: IAppInput) {
+        return this.app.insertAsync(input)
+    }
+
+    async findApp(_id: string) {
+        return this.app.findOneAsync<IApp>({ _id })
+    }
+
+    async removeApp(_id: string) {
+        return this.app.removeAsync({ _id }, { multi: false })
+    }
+
+    async updateApp(query: any, update: Record<any, any>) {
+        return await this.app.updateAsync(query, {
+            $set: update
+        }, { returnUpdatedDocs: true })
+    }
+}
