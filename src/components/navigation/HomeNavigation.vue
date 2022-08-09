@@ -24,7 +24,7 @@
     <draggable
         id="list-actions"
         ref="actionsRef"
-        v-model="workspaceStore.shortcuts"
+        v-model="workspaceStore.apps"
         group="people"
         item-key="_id"
         class="overflow-y-auto scrollbar-hide h-auto"
@@ -52,7 +52,7 @@
 
       <ws-item
           v-if="workspaceStore.hasShortcut"
-          :hotkey="`${workspaceStore.shortcuts.length}`"
+          :hotkey="`${workspaceStore.apps.length}`"
           class="apps"
           :class="{
             _active: workspaceStore.componentView === 'my-shortcuts' && !workspaceStore.focused
@@ -88,27 +88,28 @@
 </template>
 
 <script lang="ts" setup>
-import {useWorkspaceStore} from "@store/workspace";
-import {IApp} from "@shared/interface/shortcut";
+import {useMainStore} from "@store/workspace";
 import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
 import {computed, ref, watch} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
 import {useEmitter} from "@nguyenshort/vue3-mitt"
 import draggable from 'vuedraggable'
+import {IApp} from "../../../shared/models/app";
+import {useAppFn, useHeplFn, useMainFn} from "@composables/useElectron";
 
-const workspaceStore = useWorkspaceStore()
+const workspaceStore = useMainStore()
 
 const changeFocused = async (shortcut: IApp) => {
   workspaceStore.setFocused(shortcut)
-  await window.ipcRenderer.toggleUniversalView(shortcut._id)
+  await useAppFn().show(shortcut._id)
 }
 
-const removeShortcut = async (shortcut: IApp) => {
+const removeShortcut = async (app: IApp) => {
   try {
-    console.log('removeShortcut', shortcut)
-    await window.ipcRenderer.removeShortcut(shortcut._id)
-    workspaceStore.removeShortcut(shortcut._id)
-    await window.ipcRenderer.showNotification('Shortcut removed', 'success')
+    console.log('removeShortcut', app)
+    await useAppFn().remove(app._id)
+    workspaceStore.removeApp(app._id)
+    await useHeplFn().showNotification('Shortcut removed', 'success')
   } catch (e) {
    // Todo: Error
   }
@@ -139,18 +140,18 @@ const toggleColorMode = () => {
 const openWorkspace = () => {
   workspaceStore.setFocused(undefined)
   workspaceStore.setComponentView('workspace')
-  window.ipcRenderer.toggleBaseView(true)
+  useMainFn().show()
 }
 
 const showWsOptions = (shortcut: IApp) => {
-  window.ipcRenderer.openShortcutContext(shortcut._id)
+  useAppFn().openContext(shortcut._id)
 }
 
 const emitter = useEmitter()
 const openSetting = () => {
 
   if(workspaceStore.focused) {
-    window.ipcRenderer.toggleBaseView(true)
+    useMainFn().show()
     workspaceStore.setComponentView('workspace')
     workspaceStore.setFocused(undefined)
 
@@ -166,7 +167,7 @@ const openSetting = () => {
 const openMyShortcuts = () => {
   workspaceStore.setFocused(undefined)
   workspaceStore.setComponentView('my-shortcuts')
-  window.ipcRenderer.toggleBaseView(true)
+  useMainFn().show()
 }
 
 // drag/drop

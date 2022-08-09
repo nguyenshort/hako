@@ -1,22 +1,22 @@
 <template>
-  <div :id="'universal-' + shortcut._id" class="h-full"></div>
+  <div :id="'universal-' + app._id" class="h-full"></div>
 </template>
 
 <script lang="ts" setup>
-import {IApp} from "@shared/interface/shortcut";
 import {nextTick, onMounted, ref} from "vue"
-import {useWorkspaceStore} from "@store/workspace";
+import {useMainStore} from "@store/workspace";
+import {IApp} from "../../../shared/models/app";
 
 const props = defineProps<{
-  shortcut: IApp
+  app: IApp
 }>()
 
-const workspaceStore = useWorkspaceStore()
+const workspaceStore = useMainStore()
 
 const loading = ref(true)
 const init = async () => {
   try {
-    await window.ipcRenderer.initUniversalView(props.shortcut._id, workspaceStore.shortcuts.length > workspaceStore.counterInit)
+    await window.appFn.upsert(props.app._id, workspaceStore.apps.length > workspaceStore.counterInit)
     loading.value = false
   } catch (e) {
   }

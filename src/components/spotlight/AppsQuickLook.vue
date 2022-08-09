@@ -4,7 +4,7 @@
         class="flex flex-wrap"
     >
       <div
-          v-for="item in workspaceStore.shortcuts"
+          v-for="item in workspaceStore.apps"
           :key="item._id"
           class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4 cursor-pointer"
       >
@@ -31,9 +31,9 @@
 </template>
 
 <script lang="ts" setup>
-import {useWorkspaceStore} from "@store/workspace";
+import {useMainStore} from "@store/workspace";
 
-const workspaceStore = useWorkspaceStore()
+const workspaceStore = useMainStore()
 
 
 </script>

@@ -2,8 +2,8 @@
   <div
       class="px-5 pb-4"
       :class="{
-        'pt-7': !workspaceStore.hasShortcut,
-        'pt-4': workspaceStore.hasShortcut
+        'pt-7': !workspaceStore.hasApp,
+        'pt-4': workspaceStore.hasApp
       }"
   >
 
@@ -27,7 +27,7 @@
       />
     </div>
 
-    <list-short-cut class="mt-4" />
+    <list-apps class="mt-4" />
 
     <div class="fixed bottom-0 left-0 right-0">
       <div class="flex justify-end">
@@ -41,11 +41,11 @@
 </template>
 
 <script lang="ts" setup>
-import ListShortCut from "../ListShortCut.vue"
-import {useWorkspaceStore} from "@store/workspace";
+import ListApps from "../ListApps.vue"
+import {useMainStore} from "@store/workspace";
 import ExportData from "@components/ExportData.vue"
 
-const workspaceStore = useWorkspaceStore()
+const workspaceStore = useMainStore()
 
 
 </script>
@@ -53,6 +53,6 @@ const workspaceStore = useWorkspaceStore()
 import {defineComponent} from "vue"
 
 export default defineComponent({
-  name: "Workspace"
+  name: "HomeBody"
 })
 </script>

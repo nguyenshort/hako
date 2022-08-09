@@ -1,9 +1,9 @@
 import {ipcMain} from "electron";
-import {useMainService} from "../composables";
+import {useSpotlightService} from "../composables";
 
 export const spotlightEventsRegister = () => {
     ipcMain.handle('open-spotlight', async () => {
-        const mainService = useMainService()
-        await mainService.openSpotlight()
+        const mainService = useSpotlightService()
+        await mainService.show()
     })
 }

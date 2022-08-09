@@ -6,6 +6,8 @@ import {eventsRegister} from "./events";
 import * as path from "path"
 import {useDatabase, useMainService} from "./composables";
 
+import {AppChanel} from "@shared/chanel/app";
+
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 

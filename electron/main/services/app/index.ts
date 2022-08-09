@@ -3,7 +3,7 @@ import type { BrowserView } from "electron";
 import {UniversalService} from "../universal";
 import {useUniversalView} from "./composables/view";
 import {DatabaseService} from "../database";
-import {IApp} from "@shared/interface/shortcut";
+import {IApp} from "../../../../shared/models/app";
 
 @injectable()
 export class AppService {
@@ -39,7 +39,7 @@ export class AppService {
         }
 
         const view = await useUniversalView(_id)
-        view.webContents.audioMuted = true
+        // view.webContents.audioMuted = true
 
         await this.injectView(view, shortcut, auto)
     }
@@ -102,53 +102,31 @@ export class AppService {
      * Tìm kiếm shortcut theo _id
      * Cập nhật muted
      * Gi trạng thái vào db
-     * @param _id
      */
-    async toggleMutedView(_id: string) {
+    async toggleMuted(_id: string) {
         console.log('🥁 Toggle muted view:', _id)
 
-        if(!this.mainService.win) {
-            return
-        }
-
-        if(!this.views[_id]) {
+        const view = this.views[_id]
+        if(!view) {
             // Không exist trong views
             return
         }
 
-        const shortcut: IApp = await this.getShortcut(_id)
-        if(!shortcut) {
-            // Không có shortcut này
-            return
-        }
-
         // toggle
-        this.views[_id].webContents.audioMuted = !this.views[_id].webContents.audioMuted
+        this.views[_id].webContents.audioMuted = !view.webContents.audioMuted
 
         // update db
-        shortcut.muted = this.views[_id].webContents.audioMuted
-        await this.databaseService.apps.updateAsync({ name: shortcut.name }, {
-            $set: {
-                muted: shortcut.muted
-            }
-        }, {})
-        console.log('Updated shortcut:', shortcut.name)
-
-        // notify to base view
-        await this.mainService.notifyToUniversalView('after-updated-shortcut', shortcut)
+        await this.databaseService.updateApp({_id}, { muted: !view.webContents.audioMuted })
     }
 
     async removeView(_id: string) {
         console.log('Remove view:', _id)
-        if (!this.mainService.win) {
-            return
-        }
         const view = this.views[_id]
         if (!view) {
             // Không có view này
             return
         }
-        this.mainService.win.removeBrowserView(view)
+        this.mainService.win?.removeBrowserView(view)
         delete this.views[_id]
         this.mainService.insertToStackView('app-' + _id, true)
 

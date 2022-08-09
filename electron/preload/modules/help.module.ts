@@ -1,4 +1,5 @@
-import {ipcRenderer} from "electron"
+import {contextBridge, ipcRenderer} from "electron"
+import {helpAPIS} from "../../../shared/api";
 
 let timerSpotlight = 0
 let block = false
@@ -24,3 +25,6 @@ window.addEventListener('keyup', async (e) => {
 
     timerSpotlight = Date.now()
 })
+
+
+contextBridge.exposeInMainWorld('helpFn', helpAPIS)

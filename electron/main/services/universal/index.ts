@@ -3,7 +3,7 @@ import {app, BrowserView, BrowserWindow, WebPreferences} from "electron";
 import {join} from "path"
 import windowStateKeeper from "electron-window-state";
 import {ROOT_PATH} from "../../index";
-import {useAppService} from "../../composables";
+import {useAppService, useSpotlightService} from "../../composables";
 
 @injectable()
 export class UniversalService {
@@ -13,9 +13,6 @@ export class UniversalService {
     win?: Electron.BrowserWindow
 
     universalView?: Electron.BrowserView
-
-    spotlightView?: Electron.BrowserView
-    isOpenedSpotlight: boolean = false
 
     stackApps: string[] = []
 
@@ -108,7 +105,7 @@ export class UniversalService {
             return
         }
 
-        const preload = join(__dirname, '../preload/index.js')
+        const preload = join(__dirname, '../preload/universal.js')
         const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
         const options: WebPreferences = {
@@ -141,7 +138,7 @@ export class UniversalService {
         } else {
             await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
-            // view.webContents.openDevTools()
+            view.webContents.openDevTools()
         }
 
         return view
@@ -166,88 +163,6 @@ export class UniversalService {
         this.universalView?.webContents.send(event, data)
     }
 
-    /**
-     * Thực ra là toggle spotlight view
-     */
-    async openSpotlight() {
-
-        console.log('🌧 Toggle spotlight')
-
-        const build = async () => {
-            const url = `http://${process.env['VITE_DEV_SERVER_HOST']}:${process.env['VITE_DEV_SERVER_PORT']}/spotlight`
-
-            const view: Electron.BrowserView = (await this.buildVueApp(url))!
-
-            view.webContents.on('did-finish-load', () => {
-                view.webContents.send('main-process-message', new Date().toLocaleString())
-            })
-
-            view.webContents.setWindowOpenHandler(({url}) => {
-                console.log(url)
-                // if (url.startsWith('https:')) shell.openExternal(url)
-                return {action: 'deny'}
-            })
-
-            this.win!.addBrowserView(view)
-
-            /**
-             * Set bounds
-             * Mặc dù không thích điều này. Những ko change order của windows dc
-             * @link https://github.com/electron/electron/issues/15899
-             */
-            const [width, height] = this.win!.getContentSize()
-            view.setBounds({
-                x: 75,
-                y: 0,
-                width: width - 75,
-                height: height
-            })
-
-            this.spotlightView = view
-            console.log('🛰 Injected spotlight view ')
-            this.win?.addBrowserView(this.spotlightView)
-        }
-
-        // đang mở => đóng
-        if(this.isOpenedSpotlight) {
-            console.log('🌧 Close spotlight')
-            this.isOpenedSpotlight = false
-
-            if(this.spotlightView) {
-                // effect
-                // this.win?.removeBrowserView(this.spotlightView!)
-                /**
-                 * Xoá view sẽ tạo ra độ trễ không mong muốn
-                 */
-                // this.spotlightView = undefined
-                this.insertToStackView('spotlight-view', true)
-
-                setTimeout(() => {
-                    this.spotlightView?.webContents.send('toggle-spotlight', false)
-                }, 400)
-            }
-
-        }
-
-        // đang đóng => mở
-        else {
-            console.log('🌧 Open spotlight')
-            this.isOpenedSpotlight = true
-            if(!this.spotlightView) {
-                console.log('🌧 Build spotlight view')
-                await build()
-            } else {
-                // this.win?.addBrowserView(this.spotlightView)
-            }
-            this.insertToStackView('spotlight-view')
-            this.spotlightView?.webContents.send('toggle-spotlight', true)
-            // this.spotlightView?.webContents?.openDevTools()
-        }
-
-        // focus vào view gần nhất
-        await this.focusLastView()
-    }
-
     focusLastView() {
         console.log('🎯Focus last view', this.stackApps)
         if (!this.win) {
@@ -268,10 +183,14 @@ export class UniversalService {
             console.log('🌧 Focus base view')
             this.win.setTopBrowserView(this.universalView!)
             this.universalView?.webContents.focus()
+
         } else if(lastView === 'spotlight-view') {
+
             console.log('🌧 Focus spotlight view')
-            this.win.setTopBrowserView(this.spotlightView!)
-            this.spotlightView?.webContents.focus()
+            const spotlightService = useSpotlightService()
+            this.win.setTopBrowserView(spotlightService.view!)
+
+            spotlightService.view?.webContents.focus()
         }
 
         this.notifyToUniversalView('focus-last-view', lastView)

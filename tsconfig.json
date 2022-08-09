@@ -30,9 +30,6 @@
       "@composables/*": [
         "./src/composables/*"
       ],
-      "@shared/*": [
-        "./shared/*"
-      ],
       "#types/*": [
         "./src/types/*"
       ]

@@ -7,7 +7,7 @@
     <draggable
         id="shortcuts"
         ref="actionsRef"
-        v-model="workspaceStore.shortcuts"
+        v-model="workspaceStore.apps"
         group="people"
         item-key="_id"
         class="flex flex-wrap overflow-y-auto scrollbar-hide"
@@ -47,12 +47,12 @@
 
 <script lang="ts" setup>
 import ExportData from "@components/ExportData.vue"
-import {useWorkspaceStore} from "@store/workspace";
+import {useMainStore} from "@store/workspace";
 import {ref} from "vue"
 import draggable from 'vuedraggable'
-import {IApp} from "@shared/interface/shortcut";
+import {IApp} from "@shared/models/app";
 
-const workspaceStore = useWorkspaceStore()
+const workspaceStore = useMainStore()
 
 
 const drag = ref(false)

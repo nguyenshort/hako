@@ -20,7 +20,7 @@
         v-for="app in apps"
         :key="app.name"
         class="w-[110px] item-shortcut item-shortcut-bg"
-        @click="clickShortcutHandle(app)"
+        @click="addHandle(app)"
     >
       <div class="h-[60px] flex items-center justify-center relative z-10">
         <img
@@ -53,15 +53,11 @@
 </template>
 
 <script lang="ts" setup>
-import {useEmitter} from "@nguyenshort/vue3-mitt"
 import {computed, reactive} from "vue";
 import {useWindowSize} from "@vueuse/core";
-import {ICreateShortcut} from "@shared/interface/shortcut";
+import {IAppInput} from "../../shared/models/app";
 
-const { ipcRenderer } = window
-const emitter = useEmitter()
-
-const apps = reactive<ICreateShortcut[]>([
+const apps = reactive<IAppInput[]>([
   {
     name: "Google",
     icon: "/images/google.png",
@@ -94,9 +90,9 @@ const apps = reactive<ICreateShortcut[]>([
   }
 ])
 
-const clickShortcutHandle = async (app: ICreateShortcut) => {
+const addHandle = async (app: IAppInput) => {
   try {
-    await ipcRenderer.createShortcut(Object.assign({}, app))
+    await window.appFn.create(Object.assign({}, app))
   } catch (e) {
     console.log(e)
     // Todo: Error
@@ -117,7 +113,7 @@ const height = computed(() => {
 import {defineComponent} from "vue"
 
 export default defineComponent({
-  name: "ListShortCut"
+  name: "ListApps"
 })
 </script>
 

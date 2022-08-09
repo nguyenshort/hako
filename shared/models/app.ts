@@ -8,6 +8,6 @@ export interface IApp {
     isCustom?: boolean
 }
 
-export type ICreateShortcut = Pick<IApp, 'name' | 'icon' | 'url' | 'isCustom'>
+export type IAppInput = Partial<Omit<IApp, '_id'>>
 
 export type ICallback = (...args: any[]) => void|Promise<void>

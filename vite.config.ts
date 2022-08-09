@@ -10,33 +10,39 @@ rmSync('dist', { recursive: true, force: true }) // v14.14.0
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@components': join(__dirname, './src/components'),
-      '@composables': join(__dirname, './src/composables'),
-      '@pages': join(__dirname, './src/pages'),
-      '@store': join(__dirname, './src/store'),
-      '@plugins': join(__dirname, './src/plugins'),
-      '@shared': join(__dirname, './shared'),
-    }
-  },
   plugins: [
     vue(),
     electron({
       main: {
         entry: 'electron/main/index.ts',
         vite: withDebug({
+          resolve: {
+            alias: {
+              '@shared': join(__dirname, './shared')
+            }
+          },
           build: {
             outDir: 'dist/electron/main',
           },
+          plugins: [
+              tsconfigPaths({
+                loose: true
+              })
+          ]
         }),
       },
       preload: {
-        input: {
-          // You can configure multiple preload here
-          index: join(__dirname, 'electron/preload/index.ts'),
-          universal: join(__dirname, 'electron/preload/universal.ts'),
-        },
+        // input: {
+        //   // You can configure multiple preload here
+        //   index: join(__dirname, 'electron/preload/index.ts'),
+        //   universal: join(__dirname, 'electron/preload/universal.ts'),
+        //   app: join(__dirname, 'electron/preload/universal.ts'),
+        // },
+        input: [
+            join(__dirname, 'electron/preload/index.ts'),
+            join(__dirname, 'electron/preload/universal.ts'),
+            join(__dirname, 'electron/preload/app.ts')
+        ],
         vite: {
           build: {
             // For Debug
@@ -48,7 +54,9 @@ export default defineConfig({
       // Enables use of Node.js API in the Renderer-process
       renderer: {},
     }),
-      tsconfigPaths(),
+    tsconfigPaths({
+      loose: true
+    }),
   ],
   server: {
     host: pkg.env.VITE_DEV_SERVER_HOST,

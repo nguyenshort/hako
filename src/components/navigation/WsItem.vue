@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import {IApp} from "@shared/interface/shortcut"
+import {IApp} from "@shared/models/app"
 
 const props = defineProps<{
   hotkey?: string
