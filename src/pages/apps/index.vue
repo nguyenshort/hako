@@ -1,13 +1,76 @@
 <template>
-  <div class="bg-white dark:bg-slate-900 min-h-screen">Apps</div>
+  <div id="my-shortcuts" class="bg-white dark:bg-slate-900 min-h-screen px-4 py-5 flex flex-col h-full">
+    <export-data class="pb-7">
+      <h4 class="uppercase font-semibold">Ứng Dụng Của Tôi</h4>
+    </export-data>
+
+    <draggable
+        id="shortcuts"
+        ref="actionsRef"
+        v-model="apps"
+        group="people"
+        item-key="_id"
+        class="flex flex-wrap overflow-y-auto scrollbar-hide"
+        @start="drag=true"
+        @end="drag=false"
+    >
+      <template #item="{element}">
+        <div
+            class="w-[110px] item-shortcut"
+            @contextmenu.prevent="showWsOptions(element)"
+        >
+          <div class="h-[60px] flex items-center justify-center relative z-10">
+            <img
+                :src="element.icon"
+                alt=""
+                class="w-[45px] max-h-[45px] h-auto logo"
+            />
+          </div>
+
+          <div class="flex items-center mt-1.5 relative z-10">
+            <p class="text-xs font-medium">
+              {{ element.name }}
+            </p>
+          </div>
+
+        </div>
+      </template>
+    </draggable>
+
+    <div class="mt-auto flex items-center justify-between">
+      <p class="text-xs">Kéo thay để thay đổi thứ tự ứng dụng</p>
+      <p class="text-xs">© Hako Inc</p>
+    </div>
+
+  </div>
 </template>
 
-<script>
-export default {
-  name: "index"
+<script lang="ts" setup>
+import draggable from 'vuedraggable'
+import {onMounted, ref} from "vue";
+import {IApp} from "../../../shared/models/app";
+import {useAppBridge} from "@composables/useAppBridge";
+import ExportData from "@components/ExportData.vue";
+
+const drag = ref(false)
+
+
+const apps = ref<IApp[]>([])
+const getApps = async () => {
+  apps.value = await useAppBridge().getMyApps()
 }
+
+onMounted(() => getApps())
+
+
+const showWsOptions = (shortcut: IApp) => {
+  useAppBridge().openAppContext(shortcut._id)
+}
+
 </script>
 
 <style scoped>
-
+.item-shortcut {
+  @apply aspect-1 overflow-hidden flex flex-col justify-center items-center cursor-pointer mb-2 relative
+}
 </style>

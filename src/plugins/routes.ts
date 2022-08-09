@@ -8,7 +8,6 @@ import {createRouter, createWebHistory} from "vue-router";
 const routes = [
     { path: '/', component: () => import('../pages/index.vue') },
     { path: '/apps', component: () => import('../pages/apps/index.vue') },
-    { path: '/loading', component: () => import('../pages/loading/index.vue') },
     { path: '/spotlight', component: () => import('../pages/spotlight/index.vue') },
 ]
 

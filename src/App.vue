@@ -4,4 +4,8 @@
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import {useColorMode} from "@vueuse/core";
+
+useColorMode()
+</script>
