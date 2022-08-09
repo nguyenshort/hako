@@ -63,12 +63,25 @@ export class MainService {
      */
     async initApps() {
         await Promise.all(
-            this.apps.map(async (app) => await this.injectApp(app._id))
+            this.apps.map(async (app) => await this.injectApp(app._id, true))
         )
 
         this.stackViews = [...this.stackViews, ...this.apps.map(app => app._id)]
-        console.log(this.stackViews)
         this.autoFocus()
+
+        // restore app size
+        this.apps.forEach(app => {
+            const view = this.views[app._id]
+            if(view) {
+                const [width, height] = this.win!.getContentSize()
+                view.setBounds({
+                    x: 75,
+                    y: 0,
+                    width: width - 75,
+                    height: height
+                })
+            }
+        })
     }
 
     /**
@@ -153,8 +166,9 @@ export class MainService {
     /**
      * Tạo browser view cho app có custom proxy...
      * @param _id
+     * @param hidden
      */
-    async injectApp(_id: string) {
+    async injectApp(_id: string, hidden?: boolean) {
 
         this.logger.log(`🌧 Inject Proxy App: ${_id}`)
 
@@ -170,12 +184,21 @@ export class MainService {
         this.win!.addBrowserView(view)
         const [width, height] = this.win!.getContentSize()
 
-        view.setBounds({
-            x: 75,
-            y: 0,
-            width: width - 75,
-            height: height
-        })
+        if(hidden) {
+            view.setBounds({
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0
+            })
+        } else {
+            view.setBounds({
+                x: 75,
+                y: 0,
+                width: width - 75,
+                height: height
+            })
+        }
         view.setAutoResize({
             width: true,
             height: true,
