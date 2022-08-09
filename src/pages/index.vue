@@ -34,7 +34,7 @@ import UniversalView from "@components/includes/AppView.vue"
 import HomeNavigation from "@components/navigation/HomeNavigation.vue"
 
 import {useMainStore} from "@store/workspace"
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import HomeBody from "@components/home/HomeBody.vue";
 import HomeLoading from "@components/home/HomeLoading.vue";
 import {useAppBridge} from "@composables/useAppBridge";
@@ -59,67 +59,30 @@ const getMyApps = async () => {
 onMounted(() => getMyApps())
 
 // Listener
-onMounted(() => {
-  // Sự kiện app được thêm vào
-  appBridge.addEventListener('app:created', (app: IApp) => {
-    const _index = mainStore.apps.findIndex(item => item._id === app._id)
-    if (_index === -1) {
-      appBridge.pushNotify('App created', 'success')
-      mainStore.setApps([...mainStore.apps, app])
-    } else {
-      mainStore.apps[_index] = app
-    }
-  })
+onMounted(() => nextTick(() => {
+    // Sự kiện app được thêm vào
+    appBridge.addEventListener('app:created', (app: IApp) => {
+      const _index = mainStore.apps.findIndex(item => item._id === app._id)
+      if (_index === -1) {
+        appBridge.pushNotify('App created', 'success')
+        mainStore.setApps([...mainStore.apps, app])
+      } else {
+        mainStore.apps[_index] = app
+      }
+    })
 
-  // Sự kiện app được xóa
-  appBridge.addEventListener('app:removed', (_id: string) => {
-    const _index = mainStore.apps.findIndex(item => item._id === _id)
-    if (_index !== -1) {
-      appBridge.pushNotify('App deleted', 'success')
-      mainStore.apps.splice(_index, 1)
-    }
-  })
-})
+    // Sự kiện app được xóa
+    appBridge.addEventListener('app:removed', (_id: string) => {
+      const _index = mainStore.apps.findIndex(item => item._id === _id)
+      if (_index !== -1) {
+        appBridge.pushNotify('App deleted', 'success')
+        mainStore.apps.splice(_index, 1)
+      }
+    })
 
-// // Add listener
-// onMounted(() => {
-//   // thêm app
-//   window.helpFn.useEventListener(AppEvents.CREATED, (shortcut: IApp) => {
-//
-//     const _index = mainStore.apps.findIndex(item => item._id === shortcut._id)
-//     if (_index === -1) {
-//       useHeplFn().showNotification('App created', 'success')
-//       mainStore.setApps([...mainStore.apps, shortcut])
-//     } else {
-//       mainStore.apps[_index] = shortcut
-//     }
-//
-//     // Auto focus vào shortcut mới
-//     mainStore.setFocused(shortcut._id)
-//   })
-//
-//   // xóa shortcut
-//   window.helpFn.useEventListener(AppEvents.REMOVED, (_id: string) => {
-//
-//     const items = mainStore.apps.filter(item => item._id !== _id)
-//
-//     // Xóa shortcut trong đang xem
-//     if (items.length === 0) {
-//       // Xoá hết
-//       mainStore.setFocused('')
-//     } else if (mainStore.focused === _id) {
-//       mainStore.setFocused('home')
-//     }
-//     //  workspaceStore.setComponentView('workspace')
-//     mainStore.setApps(items)
-//
-//     useHeplFn().showNotification('App removed', 'success')
-//
-//   })
-//
-//   // Cập nhật
-//   useHeplFn().useEventListener("focused:change", (views: string[]) => {
-//     mainStore.setStackViews(views)
-//   })
-// })
+  // sự kiện stack change
+  appBridge.addEventListener('focused:change', (views: string[]) => {
+    mainStore.setStackViews(views)
+  })
+}))
 </script>

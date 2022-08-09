@@ -59,10 +59,10 @@ export class MainService {
      */
     async injectVueApp(route: string) {
 
+        this.logger.log(`🌧 Inject VueApp: ${route}`)
+
         const baseURL = useBaseURL()
         const url = `${baseURL}${route}`
-
-        console.log('🌧 Injecting Universal view')
 
         if(!this.win) {
             // Không có windown => create
@@ -119,22 +119,15 @@ export class MainService {
      * @param _id
      */
     async injectApp(_id: string) {
-        const app: IApp = await this.databaseService.findApp(_id)
+
+        this.logger.log(`🌧 Inject Proxy App: ${_id}`)
+
+        const { app } = this.findApp(_id)
 
         // Không có app trong db
         if(!app) {
             return
         }
-        console.log(`Init App: ${app.name}`)
-
-        /**
-         * Đã tồn tại view này
-         */
-        if (this.views[_id]) {
-            this.pushToStackView(_id)
-            return
-        }
-
         // Tạo view
         const view = await useAppView(app._id)
 
@@ -175,7 +168,9 @@ export class MainService {
     /**
      * Navigation tới router tương ứng. Upsert ếu đã có router
      */
-    async pushRoute(route: string, focus = true) {
+    async pushRoute(route: string) {
+
+        this.logger.debug(`🌧 Push route: ${route}`)
 
         const lastID = this.stackViews[0]
 
@@ -196,23 +191,24 @@ export class MainService {
 
         // Nếu chưa có view => create
         if(!this.views[route]) {
+            this.logger.log(`🌧 Inject view: ${route}`)
             const routes = useAllowedRoutes()
             if(routes.includes(route)) {
                 await this.injectVueApp(route)
             } else {
                 await this.injectApp(route)
             }
+        } else {
+            this.logger.log(`🌧 View: ${route} is existed in cache`)
         }
         this.pushToStackView(route)
 
-        if(focus) {
-            this.autoFocus()
-        }
+        this.autoFocus()
     }
 
     // Tự động active screen trên cùng dựa trên stack
     autoFocus() {
-        console.log('🎯StackViews:', this.stackViews)
+        console.log('🎯 StackViews:', this.stackViews)
         if (!this.win) {
             return
         }
@@ -232,7 +228,7 @@ export class MainService {
         this.views[viewID].webContents.focus()
 
         // Push event to mainview
-        this.views['/'].webContents.send('focused:change', this.stackViews)
+        this.emitToVue('focused:change', this.stackViews)
     }
 
     /**
@@ -273,6 +269,7 @@ export class MainService {
     }
 
     emitToVue(event: string, data?: any) {
+        this.logger.success(`🌧 Emit to Vue: ${event}`)
         useAllowedRoutes().map((route) => this.views[route] && this.views[route].webContents.send(event, data))
     }
 
@@ -336,7 +333,7 @@ export class MainService {
         }
         this.logger.success('🌧 Muted App:', _id, this.apps[index].muted)
         // Gửi sự kiện
-        this.emitToVue('app:mute:change', this.apps[index])
+        this.emitToVue('app:change', this.apps[index])
 
     }
 

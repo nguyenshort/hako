@@ -4,21 +4,20 @@
 
 <script lang="ts" setup>
 import {nextTick, onMounted, ref} from "vue"
-import {useMainStore} from "@store/workspace";
 import {IApp} from "../../../shared/models/app";
+import {useAppBridge} from "@composables/useAppBridge";
 
 const props = defineProps<{
   app: IApp
 }>()
 
-const workspaceStore = useMainStore()
-
 const loading = ref(true)
 const init = async () => {
   try {
-    await window.appFn.pushApp(props.app._id, workspaceStore.apps.length > workspaceStore.counterInit)
+    await useAppBridge().pushRoute(props.app._id)
     loading.value = false
   } catch (e) {
+    //
   }
 }
 

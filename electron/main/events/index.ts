@@ -12,7 +12,7 @@ export const eventsRegister = () => {
         new Notification({ title, body }).show()
     })
 
-    ipcMain.handle('push-route', async (_, route) => {
+    ipcMain.handle('push-route', async (_, route: string, focus?: boolean) => {
         const mainService = useMainServie()
         await mainService.pushRoute(route)
     })

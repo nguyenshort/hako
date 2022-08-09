@@ -115,6 +115,9 @@ const toggleColorMode = () => {
 }
 
 const toRoute = async (route: string) => {
+  if(mainStore.activeView === route) {
+    return
+  }
   mainStore.pushStackView(route)
   await useAppBridge().pushRoute(route)
 }

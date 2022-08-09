@@ -28,7 +28,7 @@ window.addEventListener('keyup', async (e) => {
 })
 
 export const appBridge = {
-    pushRoute: (route: string) => ipcRenderer.invoke('push-route', route),
+    pushRoute: (route: string, focus?: boolean) => ipcRenderer.invoke('push-route', route, focus),
     popRoute: () => ipcRenderer.invoke('pop-route'),
 
     // CURD Application
