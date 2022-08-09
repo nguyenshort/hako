@@ -15,12 +15,7 @@
 
       </div>
 
-      <!-- Universal Apps -->
-      <universal-view
-          v-for="item in mainStore.apps"
-          :key="item"
-          :app="item"
-      />
+      <!-- Apps -->
 
     </div>
 
@@ -30,7 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-import UniversalView from "@components/includes/AppView.vue"
 import HomeNavigation from "@components/navigation/HomeNavigation.vue"
 
 import {useMainStore} from "@store/workspace"

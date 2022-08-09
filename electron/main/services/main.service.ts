@@ -37,13 +37,38 @@ export class MainService {
         @inject(DatabaseService.key) readonly databaseService: DatabaseService
     ) {}
 
+    /**
+     * Đầu tiên là tạo view cho app mặc định
+     * Nếu lúc init có app => push vào thêm '/apps'
+     * Luôn cần '/' vì nó chứa navigation bar
+     * Nếu có app thì init tất cả các app nhuwng không set focus // sự kiện trong app.whenReady()
+     */
     async init() {
         this.logger.success('🌧 Init MainService')
         // set list app
         const apps = await this.databaseService.apps()
         this.setApps(apps)
         this.win = useMainWindow()
+
         await this.pushRoute('/')
+        if(this.apps.length > 0) {
+            await this.pushRoute('/apps')
+        }
+        this.autoFocus()
+    }
+
+    /**
+     * Khởi chạy tất cả các app nhưng không focus
+     * => focus vào vue đầu tiên
+     */
+    async initApps() {
+        await Promise.all(
+            this.apps.map(async (app) => await this.injectApp(app._id))
+        )
+
+        this.stackViews = [...this.stackViews, ...this.apps.map(app => app._id)]
+        console.log(this.stackViews)
+        this.autoFocus()
     }
 
     /**
@@ -179,7 +204,7 @@ export class MainService {
     /**
      * Navigation tới router tương ứng. Upsert ếu đã có router
      */
-    async pushRoute(route: string) {
+    async pushRoute(route: string, focus = true) {
 
         this.logger.debug(`🌧 Push route: ${route}`)
 
@@ -216,7 +241,9 @@ export class MainService {
         }
         this.pushToStackView(route)
 
-        this.autoFocus()
+        if(focus) {
+            this.autoFocus()
+        }
     }
 
     // Tự động active screen trên cùng dựa trên stack

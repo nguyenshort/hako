@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {app, BrowserWindow, session} from 'electron'
+import {app, BrowserWindow, ipcMain, session} from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
@@ -54,6 +54,7 @@ async function createWindow() {
 app.whenReady().then(async () => {
   await createWindow()
   // await mainService.universalView?.webContents.session.loadExtension(vueDevToolsPath)
+  ipcMain.emit('app:mounted')
 })
 
 app.on('window-all-closed', () => {

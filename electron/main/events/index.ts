@@ -4,6 +4,12 @@ import {IApp, IAppInput} from "../../../shared/models/app";
 
 export const eventsRegister = () => {
 
+    // Sự kiện hệ thống
+    ipcMain.once('app:mounted', async () => {
+        const mainService = useMainServie()
+        await mainService.initApps()
+    })
+
     /**
      * Notify
      */
@@ -12,7 +18,7 @@ export const eventsRegister = () => {
         new Notification({ title, body }).show()
     })
 
-    ipcMain.handle('push-route', async (_, route: string, focus?: boolean) => {
+    ipcMain.handle('push-route', async (_, route: string) => {
         const mainService = useMainServie()
         await mainService.pushRoute(route)
     })
