@@ -7,6 +7,16 @@ import {IApp, IAppInput} from "../../../shared/models/app";
 import {DatabaseService} from "./database.service";
 import {useAppView} from "../composables/view";
 import {useAllowedRoutes, useBaseURL, useMainWindow, useWebPrefs} from "../composables/browser"
+import path from "path";
+import {homedir} from "os";
+
+/**
+ * @link https://www.electronjs.org/docs/latest/tutorial/devtools-extension
+ */
+const vueDevToolsPath = path.join(
+    homedir(),
+    '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.2.1_0'
+)
 
 @injectable()
 export class MainService {
@@ -92,9 +102,10 @@ export class MainService {
             const indexHtml = join(ROOT_PATH.dist, 'index.html')
             await view.webContents.loadFile(indexHtml)
         } else {
+            await view.webContents.session.loadExtension(vueDevToolsPath)
             await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
-            view.webContents.openDevTools()
+            // view.webContents.openDevTools()
         }
 
 
@@ -111,7 +122,7 @@ export class MainService {
         this.views[route] = view
 
        //  this.pushToStackView(route)
-        console.log('🛰 Injected Universal:', route)
+        this.logger.success(`🌧 Inject VueApp: ${route} success`)
     }
 
     /**
@@ -183,6 +194,8 @@ export class MainService {
             // for spotlight
             if(route === '/spotlight') {
                 // Nếu là spotlight => close... Toogle method
+                this.pushToStackView(route, true)
+                this.autoFocus()
                 return
             }
 

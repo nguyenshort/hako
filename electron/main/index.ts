@@ -1,9 +1,8 @@
 import "reflect-metadata"
 import {app, BrowserWindow, session} from 'electron'
-import { release, homedir } from 'os'
+import { release } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
-import * as path from "path"
 import {useDatabase, useMainServie} from "./composables/instance";
 
 // Disable GPU Acceleration for Windows 7
@@ -52,17 +51,9 @@ async function createWindow() {
   await mainService.init()
 }
 
-/**
- * @link https://www.electronjs.org/docs/latest/tutorial/devtools-extension
- */
-const vueDevToolsPath = path.join(
-    homedir(),
-    '/Library/Application Support/Google/Chrome/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.2.1_0'
-)
-
 app.whenReady().then(async () => {
   await createWindow()
-  await mainService.universalView?.webContents.session.loadExtension(vueDevToolsPath)
+  // await mainService.universalView?.webContents.session.loadExtension(vueDevToolsPath)
 })
 
 app.on('window-all-closed', () => {
