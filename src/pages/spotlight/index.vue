@@ -1,16 +1,21 @@
 <template>
-  <div id="spotlight" class="min-h-screen relative flex justify-center">
+  <div
+      id="spotlight"
+      class="min-h-screen relative flex justify-center"
+      @keyup.esc="editSpotlight()"
+  >
 
     <div
         ref="target"
         id="searchbox"
-        class="max-w-[650px] w-full px-7 mt-[30vh] transition duration-300 ease-in-out"
+        class="max-w-[650px] w-full px-7 mt-[25vh] transition duration-300 ease-in-out"
         :class="{
           'scale-95 opacity-0 invisible': !showSearch,
         }"
     >
 
       <div
+          ref="form"
           class="rounded-md w-full relative"
       >
         <form class="flex items-center px-4 line-border">
@@ -23,21 +28,53 @@
               type="text"
               class="w-full bg-transparent focus:outline-0 placeholder-slate-500 pl-4 pr-3 h-14"
               placeholder="Tìm kiếm..."
-              @keyup="onKeydown"
           />
 
           <button class="bg-gray-700 rounded-md" type="reset" aria-label="Cancel">Cancel</button>
 
         </form>
 
-        <apps-quick-look v-if="!keyword" />
-
         <div
-            v-else-if="showLoading"
+            v-if="!isLoaded"
             class="px-4 mt-5 pb-4 text-sm"
         >
-          Đang Tìm Kiếm
+          Đang Tải...
         </div>
+
+        <div class="pt-5 pb-2 flex flex-wrap empty:hidden">
+          <div
+              v-for="item in appsQuickLook"
+              :key="item._id"
+              class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4 cursor-pointer"
+              @click="onClickApp(item)"
+          >
+            <div class="h-[60px] flex items-center justify-center relative z-10">
+              <img
+                  :src="item.icon"
+                  alt=""
+                  class="w-[40px] max-h-[40px] h-auto logo"
+              />
+            </div>
+
+            <div class="flex items-center relative z-10">
+              <p class="text-xs font-medium">
+                {{ item.name }}
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+            v-if="!appsQuickLook.length && keyword"
+            class="px-4 mt-5 pb-4 text-sm"
+        >
+          Không tìm thấy ứng dụng nào
+        </div>
+
+        <p class="mx-4 py-3 text-xs border-t border-gray-700">Ứng dụng bạn đã cài sẽ xuất hiện ở đây</p>
+
 
       </div>
 
@@ -47,31 +84,21 @@
 </template>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, ref, watch} from "vue"
-import {useDebounceFn, useElementVisibility} from '@vueuse/core'
-import AppsQuickLook from "@components/spotlight/AppsQuickLook.vue"
+import {computed, nextTick, onMounted, ref, watch} from "vue"
+import {useAppBridge} from "@composables/useAppBridge";
+import {IApp} from "../../../shared/models/app";
+import {onClickOutside} from "@vueuse/core";
 
 const keyword = ref('')
-const showLoading = ref(false)
-
-const searchFn = useDebounceFn(async () => {
-  // Todo: Emit search event
-}, 1000, { maxWait: 5000 })
-
-const onKeydown = () => {
-  if(keyword.value) {
-    showLoading.value = true
-    searchFn()
-  }
-}
 
 const showSearch = ref(false)
 const target = ref<HTMLDivElement>()
 
 onMounted(() => nextTick(() => {
-  // window.ipcRenderer.useEventListener('toggle-spotlight', (opened) => {
-  //   showSearch.value = opened
-  // })
+  useAppBridge().addEventListener('focused:change', (views: string[]) => {
+    console.log('focused:change', views)
+    showSearch.value = views[0] === '/spotlight'
+  })
 
   if(!showSearch.value) {
     setTimeout(() => {
@@ -93,6 +120,32 @@ watch(showSearch, (val, oldValue) => {
   }
 
 })
+
+const apps = ref<IApp[]>([])
+const appsQuickLook = computed(() => {
+  return apps.value.filter(item => item.name.toLowerCase().includes(keyword.value.toLowerCase()))
+})
+
+const isLoaded = ref(false)
+const getApps = async () => {
+  const _apps = await useAppBridge().getMyApps()
+  isLoaded.value = true
+  apps.value = _apps
+}
+
+onMounted(() => getApps())
+
+const editSpotlight = () => {
+  useAppBridge().pushRoute('/spotlight')
+}
+
+const form = ref<HTMLDivElement>()
+onClickOutside(form, () => editSpotlight())
+
+const onClickApp = (app: IApp) => {
+  useAppBridge().pushRoute(app._id)
+}
+
 </script>
 
 <style lang="scss">
