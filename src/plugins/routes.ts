@@ -2,19 +2,14 @@
 // These can be imported from other files
 import {createRouter, createWebHistory} from "vue-router"
 
-import HomePage from '../pages/index.vue'
-import AppsPage from '../pages/apps/index.vue'
-import SpotlightPage from '../pages/spotlight/index.vue'
-import SettingsPage from '../pages/settings/index.vue'
-
 // 2. Define some routes
 // Each route should map to a component.
 // We'll talk about nested routes later.
 const routes = [
-    { path: '/', component: HomePage },
-    { path: '/apps', component: AppsPage },
-    { path: '/spotlight', component: SpotlightPage },
-    { path: '/settings', component: () => SettingsPage },
+    { path: '/', component: () => import('../pages/index.vue') },
+    { path: '/apps', component: () => import('../pages/apps/index.vue') },
+    { path: '/loading', component: () => import('../pages/loading/index.vue') },
+    { path: '/spotlight', component: () => import('../pages/spotlight/index.vue') },
 ]
 
 // 3. Create the router instance and pass the `routes` option

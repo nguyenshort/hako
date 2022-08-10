@@ -11,6 +11,10 @@ export class DatabaseService {
     user: Nedb = new Datastore<IApp>({ filename: 'database/user' })
     app: Nedb = new Datastore({ filename: 'database/apps' })
 
+    /**
+     * Todo: fix in production
+     * @Link https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/76
+     */
     async init() {
         await Promise.all([
             this.user.loadDatabaseAsync(),

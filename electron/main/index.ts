@@ -42,7 +42,6 @@ const mainService = useMainServie()
 // const indexHtml = join(ROOT_PATH.dist, 'index.html')
 
 async function createWindow() {
-
   try {
     await databaseService.init()
     logger.success('Database service is ready')
