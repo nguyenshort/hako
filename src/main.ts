@@ -9,11 +9,13 @@ import {createPinia} from "pinia";
 import Vant from 'vant'
 import 'vant/lib/index.css'
 import animejs from "@plugins/animejs";
+import bridge from "@plugins/bridge";
 
 const pinia = createPinia()
 
 const app = createApp(App)
 
+app.use(bridge)
 app.use(animejs)
 app.use(Vant)
 app.use(router)
@@ -22,3 +24,5 @@ app.use(VueLottie)
 app.use(pinia)
 
 app.mount('#app')
+
+window.$vue = app

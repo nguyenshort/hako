@@ -58,6 +58,7 @@ import {useWindowSize} from "@vueuse/core";
 import {IAppInput} from "../../shared/models/app";
 import {useAppBridge} from "@composables/useAppBridge";
 
+const appBridge = useAppBridge()
 const apps = reactive<IAppInput[]>([
   {
     name: "Google",
@@ -93,7 +94,7 @@ const apps = reactive<IAppInput[]>([
 
 const addHandle = async (app: IAppInput) => {
   try {
-    await useAppBridge().createApp(Object.assign({}, app))
+    await appBridge.createApp(Object.assign({}, app))
   } catch (e) {
     //TODO: handle error
   }

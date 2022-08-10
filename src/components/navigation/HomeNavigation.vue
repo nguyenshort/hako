@@ -98,6 +98,7 @@ import {IApp} from "../../../shared/models/app";
 import {useAppBridge} from "@composables/useAppBridge";
 
 const mainStore = useMainStore()
+const appBridge = useAppBridge()
 
 const { height: heightWindow } = useWindowSize()
 const fixRef = ref<HTMLDivElement>()
@@ -120,11 +121,11 @@ const toRoute = async (route: string) => {
     return
   }
   mainStore.pushStackView(route)
-  await useAppBridge().pushRoute(route)
+  await appBridge.pushRoute(route)
 }
 
 const showWsOptions = (shortcut: IApp) => {
-  useAppBridge().openAppContext(shortcut._id)
+  appBridge.openAppContext(shortcut._id)
 }
 
 // drag/drop

@@ -59,12 +59,12 @@ const appBridge = useAppBridge()
 
 const apps = ref<IApp[]>([])
 const getApps = async () => {
-  apps.value = await useAppBridge().getMyApps()
+  apps.value = await appBridge.getMyApps()
 }
 onMounted(() => getApps())
 
 const showWsOptions = (shortcut: IApp) => {
-  useAppBridge().openAppContext(shortcut._id)
+  appBridge.openAppContext(shortcut._id)
 }
 
 onMounted(()=> {

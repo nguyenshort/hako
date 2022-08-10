@@ -56,6 +56,8 @@ onMounted(() => getMyApps())
 onMounted(() => nextTick(() => {
   // Sự kiện app được thêm vào
   appBridge.addEventListener('app:created', (app: IApp) => {
+    mainStore.pushStackView(app._id)
+    appBridge.pushRoute(app._id)
     appBridge.pushNotify('App created', 'success')
   })
 
