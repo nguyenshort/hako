@@ -1,5 +1,5 @@
 import {contextBridge, ipcRenderer} from "electron"
-import {IAppInput} from "../../shared/models/app"
+import {IApp, IAppInput} from "../../shared/models/app"
 
 let timerSpotlight = 0
 let block = false
@@ -35,6 +35,7 @@ export const appBridge = {
     createApp: (shortcut: IAppInput) => ipcRenderer.invoke('create-app', shortcut),
     getMyApps: () => ipcRenderer.invoke('get-my-apps'),
     removeApp: (_id: string) => ipcRenderer.invoke('remove-app', _id),
+    reAppOrder: (apps: Array< Pick<IApp, '_id' | 'order'>>) => ipcRenderer.send('re-apps-order', apps),
 
     // Mở context menu
     openAppContext: (id: string) => ipcRenderer.invoke('open-app-context', id),

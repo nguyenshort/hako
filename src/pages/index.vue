@@ -54,29 +54,25 @@ onMounted(() => getMyApps())
 
 // Listener
 onMounted(() => nextTick(() => {
-    // Sự kiện app được thêm vào
-    appBridge.addEventListener('app:created', (app: IApp) => {
-      const _index = mainStore.apps.findIndex(item => item._id === app._id)
-      if (_index === -1) {
-        appBridge.pushNotify('App created', 'success')
-        mainStore.setApps([...mainStore.apps, app])
-      } else {
-        mainStore.apps[_index] = app
-      }
-    })
+  // Sự kiện app được thêm vào
+  appBridge.addEventListener('app:created', (app: IApp) => {
+    appBridge.pushNotify('App created', 'success')
+  })
 
-    // Sự kiện app được xóa
-    appBridge.addEventListener('app:removed', (_id: string) => {
-      const _index = mainStore.apps.findIndex(item => item._id === _id)
-      if (_index !== -1) {
-        appBridge.pushNotify('App deleted', 'success')
-        mainStore.apps.splice(_index, 1)
-      }
-    })
+  // Sự kiện app được xóa
+  appBridge.addEventListener('app:removed', (_id: string) => {
+    appBridge.pushNotify('App deleted', 'success')
+  })
 
   // sự kiện stack change
   appBridge.addEventListener('focused:change', (views: string[]) => {
     mainStore.setStackViews(views)
   })
+
+  // sự kiện app được chọn
+  appBridge.addEventListener('apps:change', (apps: IApp[]) => {
+    mainStore.setApps(apps)
+  })
+
 }))
 </script>

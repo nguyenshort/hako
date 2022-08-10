@@ -13,6 +13,7 @@
         class="flex flex-wrap overflow-y-auto scrollbar-hide"
         @start="drag=true"
         @end="drag=false"
+        @change="onChangeOrder"
     >
       <template #item="{element}">
         <div
@@ -54,17 +55,34 @@ import ExportData from "@components/ExportData.vue";
 
 const drag = ref(false)
 
+const appBridge = useAppBridge()
 
 const apps = ref<IApp[]>([])
 const getApps = async () => {
   apps.value = await useAppBridge().getMyApps()
 }
-
 onMounted(() => getApps())
-
 
 const showWsOptions = (shortcut: IApp) => {
   useAppBridge().openAppContext(shortcut._id)
+}
+
+onMounted(()=> {
+  appBridge.addEventListener('apps:change', (_apps: IApp[]) => {
+    apps.value = _apps
+  })
+})
+
+const onChangeOrder = () => {
+
+  const _apps: Array< Pick<IApp, '_id' | 'order'>> = apps.value.map((app, index) => {
+    return {
+      _id: app._id,
+      order: index
+    }
+  })
+
+  appBridge.reAppOrder(_apps)
 }
 
 </script>

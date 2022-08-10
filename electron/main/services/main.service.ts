@@ -294,10 +294,17 @@ export class MainService {
         this.emitToVue('focused:change', this.stackViews)
     }
 
+    // Gửi sự kiện tới các vue screen dg có thể nhận được
+    emitToVue(event: string, data?: any) {
+        this.logger.success(`🌧 Emit to Vue: ${event}`)
+        useAllowedRoutes().map((route) => this.views[route] && this.views[route].webContents.send(event, data))
+    }
+
     /**
      * CURD App
      */
 
+    // Tìm kiếm app trong instance => tăng hiệu xuất so với app.find tư db
     findApp(_id: string) {
         const index = this.apps.findIndex(app => app._id === _id)
         return {
@@ -328,12 +335,7 @@ export class MainService {
      */
     setApps(apps: IApp[]) {
         this.apps = apps
-        this.emitToVue('apps:set', apps)
-    }
-
-    emitToVue(event: string, data?: any) {
-        this.logger.success(`🌧 Emit to Vue: ${event}`)
-        useAllowedRoutes().map((route) => this.views[route] && this.views[route].webContents.send(event, data))
+        this.emitToVue('apps:change', apps)
     }
 
     /**
@@ -375,6 +377,16 @@ export class MainService {
         await this.databaseService.updateApp(_id, app)
         this.setApps([...this.apps.slice(0, index), app, ...this.apps.slice(index + 1)])
         this.emitToVue('app:updated', app)
+    }
+
+    async reAppsOrder(input: Array<Pick<IApp, '_id' | 'order'>>) {
+        const result = await Promise.all(
+            input.map(
+                async ({ _id, order }) => this.databaseService.updateApp({ _id }, { order })
+            )
+        )
+        this.logger.success('🌧 Re order success')
+        this.setApps(result.map(record => record.affectedDocuments).filter(app => app))
     }
 
     /**

@@ -146,6 +146,12 @@ const onClickApp = (app: IApp) => {
   useAppBridge().pushRoute(app._id)
 }
 
+onMounted(()=> {
+  useAppBridge().addEventListener('apps:change', (_apps: IApp[]) => {
+    apps.value = _apps
+  })
+})
+
 </script>
 
 <style lang="scss">
