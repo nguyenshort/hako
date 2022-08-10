@@ -350,6 +350,10 @@ export class MainService {
             delete this.views[_id]
             this.pushToStackView(_id, true)
 
+            // Xoá hết app => về trang chủ
+            if(this.apps.length === 1) {
+               this.pushToStackView('/')
+            }
             // Thay đổi focus hiện tại
             this.autoFocus()
         }

@@ -30,6 +30,7 @@
         class="overflow-y-auto scrollbar-hide h-auto"
         @start="drag=true"
         @end="drag=false"
+        @change="onChangeOrder"
         :style="{ height }"
     >
       <template #item="{element, index}">
@@ -128,6 +129,18 @@ const showWsOptions = (shortcut: IApp) => {
 
 // drag/drop
 const drag = ref(false)
+
+const onChangeOrder = () => {
+
+  const _apps: Array< Pick<IApp, '_id' | 'order'>> = mainStore.apps.map((app, index) => {
+    return {
+      _id: app._id,
+      order: index
+    }
+  })
+
+  useAppBridge().reAppOrder(_apps)
+}
 </script>
 
 <script lang="ts">
