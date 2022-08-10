@@ -62,6 +62,8 @@ export class MainService {
      * => focus vào vue đầu tiên
      */
     async initApps() {
+        const start = Date.now()
+        this.logger.info('🌧 Init Apps')
         await Promise.all(
             this.apps.map(async (app) => await this.injectApp(app._id, true))
         )
@@ -82,6 +84,7 @@ export class MainService {
                 })
             }
         })
+        this.logger.info(`🌧 Init Apps done in ${Date.now() - start}ms`)
     }
 
     /**
@@ -137,6 +140,7 @@ export class MainService {
         })
 
         if (electronApp.isPackaged) {
+            console.log('🌧 Index:', join(ROOT_PATH.dist, 'index.html'))
             const indexHtml = join(ROOT_PATH.dist, 'index.html')
             await view.webContents.loadFile(indexHtml)
         } else {

@@ -8,21 +8,11 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && electron-builder"
+    "build": "vue-tsc --noEmit && vite build && electron-builder",
+    "preview": "vite preview"
   },
   "engines": {
     "node": ">=14.17.0"
-  },
-  "build": {
-    "protocols": [
-      {
-        "name": "hakox",
-        "role": "Viewer",
-        "schemes": [
-          "hakox"
-        ]
-      }
-    ]
   },
   "devDependencies": {
     "@types/consola": "^2.2.5",

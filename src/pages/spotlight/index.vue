@@ -89,14 +89,14 @@ import {useAppBridge} from "@composables/useAppBridge";
 import {IApp} from "../../../shared/models/app";
 import {onClickOutside} from "@vueuse/core";
 
+const appBridge = useAppBridge()
+
 const keyword = ref('')
-
 const showSearch = ref(false)
-const target = ref<HTMLDivElement>()
 
+const target = ref<HTMLDivElement>()
 onMounted(() => nextTick(() => {
-  useAppBridge().addEventListener('focused:change', (views: string[]) => {
-    console.log('focused:change', views)
+  appBridge.addEventListener('focused:change', (views: string[]) => {
     showSearch.value = views[0] === '/spotlight'
   })
 

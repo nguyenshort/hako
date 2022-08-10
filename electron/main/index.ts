@@ -4,6 +4,7 @@ import { release } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
 import {useDatabase, useMainServie} from "./composables/instance";
+import consola from "consola";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -28,6 +29,8 @@ export const ROOT_PATH = {
   public: join(__dirname, app.isPackaged ? '../..' : '../../../public'),
 }
 
+const logger = consola.withScope('App')
+
 
 const databaseService = useDatabase()
 const mainService = useMainServie()
@@ -42,7 +45,9 @@ async function createWindow() {
 
   try {
     await databaseService.init()
+    logger.success('Database service is ready')
   } catch (e) {
+    console.log('Init DB error', e)
     app.exit(0)
   }
 
@@ -63,6 +68,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('second-instance', () => {
+  console.log('app:second-instance')
   if (mainService.win) {
     // Focus on the main window if the user tried to open another
     if (mainService.win.isMinimized()) mainService.win.restore()
@@ -71,6 +77,7 @@ app.on('second-instance', () => {
 })
 
 app.on('activate', async () => {
+  console.log('app:activate')
   const allWindows = BrowserWindow.getAllWindows()
   if (allWindows.length) {
     allWindows[0].focus()

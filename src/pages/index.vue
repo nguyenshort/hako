@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-slate-900 min-h-screen">
+  <div class="_page-bg">
 
     <div id="home">
       <div class="flex">
