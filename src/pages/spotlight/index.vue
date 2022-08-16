@@ -84,10 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, nextTick, onMounted, ref, watch} from "vue"
-import {useAppBridge} from "../../composable/useAppBridge";
-import {IApp} from "../../../shared/models/app";
-import {onClickOutside} from "@vueuse/core";
+import {AppDocument} from "@entities/app.entity"
 
 const appBridge = useAppBridge()
 
@@ -121,7 +118,7 @@ watch(showSearch, (val, oldValue) => {
 
 })
 
-const apps = ref<IApp[]>([])
+const apps = ref<AppDocument[]>([])
 const appsQuickLook = computed(() => {
   return apps.value.filter(item => item.name.toLowerCase().includes(keyword.value.toLowerCase()))
 })
@@ -142,12 +139,12 @@ const editSpotlight = () => {
 const form = ref<HTMLDivElement>()
 onClickOutside(form, () => editSpotlight())
 
-const onClickApp = (app: IApp) => {
+const onClickApp = (app: AppDocument) => {
   useAppBridge().pushRoute(app._id)
 }
 
 onMounted(()=> {
-  appBridge.addEventListener('apps:change', (_apps: IApp[]) => {
+  appBridge.addEventListener('apps:change', (_apps: AppDocument[]) => {
     apps.value = _apps
   })
 })

@@ -3,7 +3,7 @@ import {app as electronApp, BrowserView} from "electron"
 import {join} from "path"
 import consola from 'consola'
 import {ROOT_PATH} from "../index";
-import {IApp, IAppInput} from "../../../shared/models/app";
+import {AppDocument, IAppInput} from "../../../src/entities/app.entity";
 import {DatabaseService} from "./database.service";
 import {useAppView} from "../composables/view";
 import {useAllowedRoutes, useBaseURL, useMainWindow, useWebPrefs} from "../composables/browser"
@@ -31,7 +31,7 @@ export class MainService {
     // Stack các view đang được hiển thị
     stackViews: string[] = []
     // Danh sách các app của user đã cài
-    apps: IApp[] = []
+    apps: AppDocument[] = []
 
     constructor(
         @inject(DatabaseService.key) readonly databaseService: DatabaseService
@@ -323,7 +323,7 @@ export class MainService {
      */
     async createApp(input: IAppInput) {
         this.logger.info("Creating app...", input.name)
-        const app = await this.databaseService.createApp(input) as IApp
+        const app = await this.databaseService.createApp(input) as AppDocument
 
         this.logger.success('🌧 Created App:', app)
 
@@ -337,7 +337,7 @@ export class MainService {
      * Cập nhật danh sách apps và gửi lại cho vue
      * @param apps
      */
-    setApps(apps: IApp[]) {
+    setApps(apps: AppDocument[]) {
         this.apps = apps
         this.emitToVue('apps:change', apps)
     }
@@ -375,7 +375,7 @@ export class MainService {
      * @param _id
      * @param input
      */
-    async updateApp(_id: string, input: Partial<Omit<IApp, '_id'>>) {
+    async updateApp(_id: string, input: Partial<Omit<AppDocument, '_id'>>) {
 
         const index = this.apps.findIndex(app => app._id === _id)
         if(index === -1) {
@@ -387,7 +387,7 @@ export class MainService {
         this.emitToVue('app:updated', app)
     }
 
-    async reAppsOrder(input: Array<Pick<IApp, '_id' | 'order'>>) {
+    async reAppsOrder(input: Array<Pick<AppDocument, '_id' | 'order'>>) {
         const result = await Promise.all(
             input.map(
                 async ({ _id, order }) => this.databaseService.updateApp({ _id }, { order })

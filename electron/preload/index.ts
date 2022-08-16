@@ -1,5 +1,5 @@
 import {contextBridge, ipcRenderer} from "electron"
-import {IApp, IAppInput} from "../../shared/models/app"
+import {CreateAppInput, UpdateAppsOrderInput} from "@dtos/app.dto"
 
 let timerSpotlight = 0
 let block = false
@@ -32,10 +32,10 @@ export const appBridge = {
     popRoute: () => ipcRenderer.invoke('pop-route'),
 
     // CURD Application
-    createApp: (shortcut: IAppInput) => ipcRenderer.invoke('create-app', shortcut),
+    createApp: (shortcut: CreateAppInput) => ipcRenderer.invoke('create-app', shortcut),
     getMyApps: () => ipcRenderer.invoke('get-my-apps'),
     removeApp: (_id: string) => ipcRenderer.invoke('remove-app', _id),
-    reAppOrder: (apps: Array< Pick<IApp, '_id' | 'order'>>) => ipcRenderer.send('re-apps-order', apps),
+    reAppOrder: (apps: UpdateAppsOrderInput) => ipcRenderer.send('re-apps-order', apps),
 
     // Mở context menu
     openAppContext: (id: string) => ipcRenderer.invoke('open-app-context', id),

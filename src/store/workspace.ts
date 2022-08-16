@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import {IApp} from "../../shared/models/app";
+import {AppDocument} from "../entities/app.entity";
 
 interface State extends Record<string, any> {
-    apps: IApp[],
+    apps: AppDocument[],
     stackViews: string[],
     counterInit: number
 }
@@ -20,7 +20,7 @@ export const useMainStore = defineStore('workspace', {
         activeView: (state: State) => state.stackViews[0],
     },
     actions: {
-        setApps(shortcuts: IApp[]) {
+        setApps(shortcuts: AppDocument[]) {
             this.apps = shortcuts
         },
         removeApp(id: string) {

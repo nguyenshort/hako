@@ -8,6 +8,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AppsQuickLook: typeof import('./../src/components/spotlight/AppsQuickLook.vue')['default']
+    Draggable: typeof import('vuedraggable')['default']
     ExportData: typeof import('./../src/components/ExportData.vue')['default']
     HelloWorld: typeof import('./../src/components/HelloWorld.vue')['default']
     HomeBody: typeof import('./../src/components/home/HomeBody.vue')['default']

@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import {IApp} from "../../shared/models/app";
+import {AppDocument} from "@entities/app.entity"
 
 const mainStore = useMainStore()
 const appBridge = useAppBridge()
@@ -48,7 +48,7 @@ onMounted(() => getMyApps())
 // Listener
 onMounted(() => nextTick(() => {
   // Sự kiện app được thêm vào
-  appBridge.addEventListener('app:created', (app: IApp) => {
+  appBridge.addEventListener('app:created', (app: AppDocument) => {
     mainStore.pushStackView(app._id)
     appBridge.pushRoute(app._id)
     appBridge.pushNotify('App created', 'success')
@@ -65,7 +65,7 @@ onMounted(() => nextTick(() => {
   })
 
   // sự kiện app được chọn
-  appBridge.addEventListener('apps:change', (apps: IApp[]) => {
+  appBridge.addEventListener('apps:change', (apps: AppDocument[]) => {
     mainStore.setApps(apps)
   })
 

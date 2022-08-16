@@ -55,7 +55,7 @@
 <script lang="ts" setup>
 import {computed, reactive} from "vue";
 import {useWindowSize} from "@vueuse/core";
-import {IAppInput} from "../../shared/models/app";
+import {IAppInput} from "../entities/app.entity";
 import {useAppBridge} from "../composable/useAppBridge";
 
 const appBridge = useAppBridge()

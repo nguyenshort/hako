@@ -94,13 +94,8 @@
 </template>
 
 <script lang="ts" setup>
-import {useMainStore} from "@store/workspace";
-import {useColorMode, useElementSize, useWindowSize} from "@vueuse/core";
-import {computed, ref} from "vue";
-import WsItem from "@components/navigation/WsItem.vue";
 import draggable from 'vuedraggable'
-import {IApp} from "../../../shared/models/app";
-import {useAppBridge} from "../../composable/useAppBridge";
+import {AppDocument} from "@entities/app.entity"
 
 const mainStore = useMainStore()
 const appBridge = useAppBridge()
@@ -129,7 +124,7 @@ const toRoute = async (route: string) => {
   await appBridge.pushRoute(route)
 }
 
-const showWsOptions = (shortcut: IApp) => {
+const showWsOptions = (shortcut: AppDocument) => {
   appBridge.openAppContext(shortcut._id)
 }
 
@@ -138,7 +133,7 @@ const drag = ref(false)
 
 const onChangeOrder = () => {
 
-  const _apps: Array< Pick<IApp, '_id' | 'order'>> = mainStore.apps.map((app, index) => {
+  const _apps: Array< Pick<AppDocument, '_id' | 'order'>> = mainStore.apps.map((app, index) => {
     return {
       _id: app._id,
       order: index

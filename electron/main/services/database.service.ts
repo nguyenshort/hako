@@ -2,13 +2,13 @@ import {injectable} from "inversify"
 
 import Datastore from '@seald-io/nedb'
 import type Nedb from "@seald-io/nedb"
-import {IApp, IAppInput} from "../../../shared/models/app";
+import {AppDocument, IAppInput} from "../../../src/entities/app.entity";
 
 @injectable()
 export class DatabaseService {
     static key: symbol = Symbol.for(DatabaseService.name)
 
-    user: Nedb = new Datastore<IApp>({ filename: 'database/user' })
+    user: Nedb = new Datastore<AppDocument>({ filename: 'database/user' })
     app: Nedb = new Datastore({ filename: 'database/apps' })
 
     /**
@@ -35,7 +35,7 @@ export class DatabaseService {
     }
 
     async findApp(_id: string) {
-        return this.app.findOneAsync<IApp>({ _id })
+        return this.app.findOneAsync<AppDocument>({ _id })
     }
 
     async removeApp(_id: string) {

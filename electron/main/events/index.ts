@@ -1,6 +1,6 @@
 import {ipcMain, ipcRenderer, Menu, MenuItem, MenuItemConstructorOptions, Notification} from "electron";
 import {useDatabase, useMainServie} from "../composables/instance";
-import {IApp, IAppInput} from "../../../shared/models/app";
+import {AppDocument, IAppInput} from "../../../src/entities/app.entity";
 
 export const eventsRegister = () => {
 
@@ -81,7 +81,7 @@ export const eventsRegister = () => {
         ctxMenu.popup()
     })
 
-    ipcMain.on('re-apps-order', async (_, apps: Array< Pick<IApp, '_id' | 'order'>>) => {
+    ipcMain.on('re-apps-order', async (_, apps: Array< Pick<AppDocument, '_id' | 'order'>>) => {
         const mainService = useMainServie()
         await mainService.reAppsOrder(apps)
     })

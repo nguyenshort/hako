@@ -30,6 +30,12 @@
       "@composable/*": [
         "./src/composable/*"
       ],
+      "@dtos/*": [
+        "./src/dto/*"
+      ],
+      "@entities/*": [
+        "./src/entities/*"
+      ],
       "#types/*": [
         "./src/types/*"
       ]

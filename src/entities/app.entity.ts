@@ -1,4 +1,4 @@
-export interface IApp {
+export interface AppDocument {
     _id: string
     name: string
     icon: string
@@ -7,5 +7,3 @@ export interface IApp {
     muted?: boolean
     isCustom?: boolean
 }
-
-export type IAppInput = Partial<Omit<IApp, '_id'>>

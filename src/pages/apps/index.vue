@@ -82,37 +82,33 @@
 </template>
 
 <script lang="ts" setup>
-import draggable from 'vuedraggable'
-import {nextTick, onMounted, ref} from "vue";
-import {IApp} from "../../../shared/models/app";
-import {useAppBridge} from "../../composable/useAppBridge";
-import PageTitle from "@components/includes/PageTitle.vue";
-import {useAnime} from "../../composable/useAnime";
+import {AppDocument} from "@entities/app.entity"
+import {UpdateAppsOrderInput} from "@dtos/app.dto";
 
 const drag = ref(false)
 
 const appBridge = useAppBridge()
 const anime = useAnime()
 
-const apps = ref<IApp[]>([])
+const apps = ref<AppDocument[]>([])
 const getApps = async () => {
   apps.value = await appBridge.getMyApps()
 }
 onMounted(() => getApps())
 
-const showWsOptions = (shortcut: IApp) => {
+const showWsOptions = (shortcut: AppDocument) => {
   appBridge.openAppContext(shortcut._id)
 }
 
 onMounted(()=> {
-  appBridge.addEventListener('apps:change', (_apps: IApp[]) => {
+  appBridge.addEventListener('apps:change', (_apps: AppDocument[]) => {
     apps.value = _apps
   })
 })
 
 const onChangeOrder = () => {
 
-  const _apps: Array< Pick<IApp, '_id' | 'order'>> = apps.value.map((app, index) => {
+  const _apps: UpdateAppsOrderInput = apps.value.map((app, index) => {
     return {
       _id: app._id,
       order: index
@@ -124,7 +120,7 @@ const onChangeOrder = () => {
 
 const editEnabled = ref(false)
 
-const removeApp = (app: IApp) => {
+const removeApp = (app: AppDocument) => {
   const el = document.querySelector(`[data-id="${app._id}"]`) as HTMLElement
   // remove defalt animation
   el.classList.remove('transition')

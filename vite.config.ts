@@ -100,7 +100,12 @@ export default ({ mode }) => {
         resolvers: [
           IconsResolver({
             prefix: 'i'
-          })
+          }),
+          (componentName) => {
+            // where `componentName` is always CapitalCase
+            if (componentName.toLowerCase() === 'draggable')
+              return { name: 'default', from: 'vuedraggable' }
+          },
         ],
         dts: path.resolve(__dirname, 'types/components.d.ts')
       }),

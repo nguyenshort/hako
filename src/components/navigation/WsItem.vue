@@ -22,11 +22,11 @@
 
 <script lang="ts" setup>
 
-import {IApp} from "../../../shared/models/app";
+import {AppDocument} from "../../entities/app.entity";
 
 const props = defineProps<{
   hotkey?: string
-  item?: IApp
+  item?: AppDocument
 }>()
 
 </script>

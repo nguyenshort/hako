@@ -53,6 +53,7 @@
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@types/animejs": "^3.1.5",
     "@vueuse/core": "^9.1.0",
+    "@vueuse/electron": "^9.1.0",
     "animejs": "^3.2.1",
     "consola": "^2.15.3",
     "electron-is-dev": "^2.0.0",
