@@ -100,7 +100,7 @@ import {computed, ref} from "vue";
 import WsItem from "@components/navigation/WsItem.vue";
 import draggable from 'vuedraggable'
 import {IApp} from "../../../shared/models/app";
-import {useAppBridge} from "@composables/useAppBridge";
+import {useAppBridge} from "../../composable/useAppBridge";
 
 const mainStore = useMainStore()
 const appBridge = useAppBridge()
@@ -145,7 +145,7 @@ const onChangeOrder = () => {
     }
   })
 
-  useAppBridge().reAppOrder(_apps)
+  appBridge.reAppOrder(_apps)
 }
 </script>
 

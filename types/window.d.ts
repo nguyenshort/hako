@@ -1,5 +1,5 @@
 import {App} from "vue"
-import {appBridge} from "../../electron/preload";
+import {appBridge} from "../electron/preload";
 
 declare global {
     interface Window {

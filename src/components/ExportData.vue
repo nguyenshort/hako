@@ -1,14 +1,8 @@
 <template>
   <div class="flex items-center">
-    <slot></slot>
+    <h4 class="uppercase font-semibold">Ứng Dụng Của Tôi</h4>
 
-    <button class="ml-auto shared-btn">
-      Shared App
-    </button>
-
-    <button class="shared-btn ml-3">
-      Export Data
-    </button>
+    <div class="ml-auto"></div>
 
   </div>
 </template>

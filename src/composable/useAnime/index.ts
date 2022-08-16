@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import { AnimeInstance } from '#types/anime'
+import { AnimeInstance } from '../../../types/anime'
 import { ANIME_CONSTANT } from '@plugins/animejs'
 
 export const useAnime = (): AnimeInstance => {

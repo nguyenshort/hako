@@ -25,13 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-import HomeNavigation from "@components/navigation/HomeNavigation.vue"
-
-import {useMainStore} from "@store/workspace"
-import {nextTick, onMounted, ref} from "vue";
-import HomeBody from "@components/home/HomeBody.vue";
-import HomeLoading from "@components/home/HomeLoading.vue";
-import {useAppBridge} from "@composables/useAppBridge";
 import {IApp} from "../../shared/models/app";
 
 const mainStore = useMainStore()

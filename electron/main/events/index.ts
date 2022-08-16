@@ -6,6 +6,7 @@ export const eventsRegister = () => {
 
     // Sự kiện hệ thống
     ipcMain.once('app:mounted', async () => {
+        console.log('app:mounted')
         const mainService = useMainServie()
         await mainService.initApps()
     })
@@ -30,6 +31,11 @@ export const eventsRegister = () => {
     ipcMain.handle('create-app', async (_, input: IAppInput) => {
         const mainService = useMainServie()
         await mainService.createApp(input)
+    })
+
+    ipcMain.handle('remove-app', async (_, _id: string) => {
+        const mainService = useMainServie()
+        await mainService.removeApp(_id)
     })
 
     ipcMain.handle('get-my-apps',() => {

@@ -85,7 +85,7 @@
 
 <script lang="ts" setup>
 import {computed, nextTick, onMounted, ref, watch} from "vue"
-import {useAppBridge} from "@composables/useAppBridge";
+import {useAppBridge} from "../../composable/useAppBridge";
 import {IApp} from "../../../shared/models/app";
 import {onClickOutside} from "@vueuse/core";
 
@@ -128,7 +128,7 @@ const appsQuickLook = computed(() => {
 
 const isLoaded = ref(false)
 const getApps = async () => {
-  const _apps = await useAppBridge().getMyApps()
+  const _apps = await appBridge.getMyApps()
   isLoaded.value = true
   apps.value = _apps
 }
@@ -136,7 +136,7 @@ const getApps = async () => {
 onMounted(() => getApps())
 
 const editSpotlight = () => {
-  useAppBridge().pushRoute('/spotlight')
+  appBridge.pushRoute('/spotlight')
 }
 
 const form = ref<HTMLDivElement>()
@@ -147,7 +147,7 @@ const onClickApp = (app: IApp) => {
 }
 
 onMounted(()=> {
-  useAppBridge().addEventListener('apps:change', (_apps: IApp[]) => {
+  appBridge.addEventListener('apps:change', (_apps: IApp[]) => {
     apps.value = _apps
   })
 })

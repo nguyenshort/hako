@@ -27,14 +27,15 @@
       "@plugins/*": [
         "./src/plugins/*"
       ],
-      "@composables/*": [
-        "./src/composables/*"
+      "@composable/*": [
+        "./src/composable/*"
       ],
       "#types/*": [
         "./src/types/*"
       ]
     }
   },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

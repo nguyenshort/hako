@@ -46,14 +46,14 @@ export class MainService {
     async init() {
         this.logger.success('🌧 Init MainService')
         // set list app
-        // const apps = await this.databaseService.apps()
-        // this.setApps(apps)
+        const apps = await this.databaseService.apps()
+        this.setApps(apps)
         this.win = useMainWindow()
 
         await this.pushRoute('/')
-        // if(this.apps.length > 0) {
-        //     await this.pushRoute('/apps')
-        // }
+        if(this.apps.length > 0) {
+            await this.pushRoute('/apps')
+        }
         this.autoFocus()
     }
 
