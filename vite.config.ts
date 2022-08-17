@@ -13,6 +13,7 @@ import Inspect from 'vite-plugin-inspect'
 // @ts-ignore
 import EnvGenerator from './src/plugins/vite/env'
 import electron from "vite-plugin-electron";
+import {AntDesignVueResolver} from "unplugin-vue-components/resolvers";
 
 rmSync('dist', { recursive: true, force: true }) // v14.14.0
 
@@ -100,6 +101,9 @@ export default ({ mode }) => {
         resolvers: [
           IconsResolver({
             prefix: 'i'
+          }),
+          AntDesignVueResolver({
+            importStyle: 'less'
           }),
           (componentName) => {
             // where `componentName` is always CapitalCase

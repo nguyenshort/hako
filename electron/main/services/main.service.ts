@@ -255,6 +255,11 @@ export class MainService {
             return
         }
 
+        // Ko cho push vào spotlight khi apps trống
+        if(route === '/spotlight' && this.apps.length === 0) {
+            return
+        }
+
         // Nếu chưa có view => create
         if(!this.views[route]) {
             this.logger.log(`🌧 Inject view: ${route}`)

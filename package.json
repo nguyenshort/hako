@@ -59,6 +59,7 @@
     "@vueuse/core": "^9.1.0",
     "@vueuse/electron": "^9.1.0",
     "animejs": "^3.2.1",
+    "ant-design-vue": "^3.2.11",
     "consola": "^2.15.3",
     "electron-is-dev": "^2.0.0",
     "electron-window-state": "^5.0.3",
