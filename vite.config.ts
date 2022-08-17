@@ -127,17 +127,7 @@ export default ({ mode }) => {
         less: {
           modifyVars: {
             'primary-color': '#3b66f5',
-            'height-base': '40px',
-            // 'padding-md': '40px',
             'border-radius-base': '6px',
-            'input-padding-horizontal': '15px',
-            'form-vertical-label-padding': '0 0 4px',
-            'text-color': '#4B5563',
-            'label-color': '#4B5563',
-            'surface-lighter': '#f6f7fc',
-            'table-header-bg': '#fff',
-            'table-header-color': 'rgba(18,18,23,.6)',
-            'table-selected-row-bg': '#fff',
             'font-family':
                 'Nunito Sans, SF Pro Text, SF Pro Icons, Roboto, Helvetica Neue, Helvetica, Arial, sans-serif'
           },

@@ -7,6 +7,8 @@
 interface ImportMetaEnv {
   readonly VITE_PORT: string
 
+  readonly VITE_VERSION: string
+
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv

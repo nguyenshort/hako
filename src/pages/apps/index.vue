@@ -5,7 +5,7 @@
         class="pb-7"
     >
       <button
-          class="_page-title-btn text-white flex items-center uppercase transition duration-300 ease-in-out"
+          class="ml-auto text-sm px-4 py-0.5 rounded text-white transition"
           :class="{
             'bg-rose-600': !editEnabled,
             'bg-primary-600': editEnabled

@@ -8,7 +8,7 @@ import {createPinia} from "pinia";
 import Vant from 'vant'
 import 'vant/lib/index.css'
 import animejs from "@plugins/animejs";
-import bridge from "@plugins/bridge";
+import bridge from "@plugins/bridge"
 
 const pinia = createPinia()
 

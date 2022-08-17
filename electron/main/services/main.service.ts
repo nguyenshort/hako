@@ -148,7 +148,7 @@ export class MainService {
             await view.webContents.session.loadExtension(vueDevToolsPath)
             await view.webContents.loadURL(url)
             // Open devTool if the app is not packaged
-            view.webContents.openDevTools()
+            // view.webContents.openDevTools()
         }
 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center">
-    <h4 class="uppercase font-semibold">
+    <h4 class="uppercase font-semibold text-slate-500 dark:text-slate-400">
       {{ title }}
     </h4>
 
