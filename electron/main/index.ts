@@ -3,7 +3,7 @@ import {app, BrowserWindow, ipcMain, session} from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import {eventsRegister} from "./events";
-import {useDatabase, useMainServie} from "./composables/instance";
+import {useDatabase, useMainServie, useUserServie} from "./composables/instance";
 import consola from "consola";
 
 // Disable GPU Acceleration for Windows 7
@@ -34,6 +34,7 @@ const logger = consola.withScope('App')
 
 const databaseService = useDatabase()
 const mainService = useMainServie()
+const userService = useUserServie()
 
 // Here, you can also use other preload
 // const preload = join(__dirname, '../preload/index.js')
@@ -51,6 +52,13 @@ async function createWindow() {
   }
 
   eventsRegister()
+
+  /**
+   * Initialize user => nếu ko có user thì tạo mới
+   * Ko có user => lần đầu mở app
+   * => show màn hình loadding
+   */
+  await userService.init()
 
   await mainService.init()
 }

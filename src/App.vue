@@ -1,7 +1,7 @@
 <template>
-  <div id="hako" class="antialiased text-slate-500 dark:text-slate-400">
-    <router-view />
-  </div>
+  <suspense>
+    <master-layout />
+  </suspense>
 </template>
 
 <script lang="ts" setup>

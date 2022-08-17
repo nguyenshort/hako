@@ -1,6 +1,7 @@
 import {ipcMain, Notification} from "electron";
 import {useMainServie} from "../composables/instance"
 import {appEventsRegister} from "./app.event";
+import {userEventsRegister} from "./user.event";
 
 export const eventsRegister = () => {
 
@@ -29,5 +30,7 @@ export const eventsRegister = () => {
      * App
      */
     appEventsRegister()
+
+    userEventsRegister()
 
 }

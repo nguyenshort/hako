@@ -1,5 +1,6 @@
 import {contextBridge, ipcRenderer} from "electron"
 import {CreateAppInput, UpdateAppsOrderInput} from "@dtos/app.dto"
+import {UserDocument} from "@entities/user.entity";
 
 let timerSpotlight = 0
 let block = false
@@ -30,6 +31,8 @@ window.addEventListener('keyup', async (e) => {
 export const appBridge = {
     pushRoute: (route: string, focus?: boolean) => ipcRenderer.invoke('push-route', route, focus),
     popRoute: () => ipcRenderer.invoke('pop-route'),
+    pushNotify: (title: string, message: string) => ipcRenderer.invoke('push-notify', title, message),
+    addEventListener: (event: string, callback: (...args: any[]) => void|Promise<void>) => ipcRenderer.on(event, (event, data) => callback(data)),
 
     // CURD Application
     createApp: (shortcut: CreateAppInput) => ipcRenderer.invoke('create-app', shortcut),
@@ -40,9 +43,10 @@ export const appBridge = {
     // Mở context menu
     openAppContext: (id: string) => ipcRenderer.invoke('open-app-context', id),
 
-    addEventListener: (event: string, callback: (...args: any[]) => void|Promise<void>) => ipcRenderer.on(event, (event, data) => callback(data)),
 
-    pushNotify: (title: string, message: string) => ipcRenderer.invoke('push-notify', title, message),
+    // CURD User
+    getUser: (): Promise<UserDocument> => ipcRenderer.invoke('get-user'),
+    updateUser: (input: Partial<UserDocument>) => ipcRenderer.invoke('update-user', input),
 }
 
 contextBridge.exposeInMainWorld('appBridge', appBridge)

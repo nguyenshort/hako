@@ -39,11 +39,13 @@
       <div class="w-7 flex-shrink-0"></div>
 
       <div class="w-full _tab-content overflow-y-auto scrollbar-hide">
-        <keep-alive>
-          <transition name="fade" mode="out-in">
-            <component :is="activeTab.component" />
-          </transition>
-        </keep-alive>
+        <div class="relative">
+          <keep-alive>
+            <transition name="fade" mode="out-in">
+              <component :is="activeTab.component" />
+            </transition>
+          </keep-alive>
+        </div>
       </div>
 
     </div>
@@ -57,6 +59,7 @@ import RiListSettingsLine from '~icons/ri/list-settings-line'
 import MaterialSymbolsFingerprint from '~icons/material-symbols/fingerprint'
 import IonExtensionPuzzleOutline from '~icons/ion/extension-puzzle-outline'
 import MaterialSymbolsInfoOutline from '~icons/material-symbols/info-outline'
+import RiShieldStarLine from '~icons/ri/shield-star-line'
 
 import SettingLicense from '@components/settings/SettingLicense.vue'
 import SettingGeneral from '@components/settings/SettingGeneral.vue'
@@ -72,6 +75,11 @@ const tabs = shallowRef([
     name: 'Cài Đặt Chung',
     component: SettingGeneral,
     icon: RiListSettingsLine
+  },
+  {
+    name: 'Quyền Riêng Tư',
+    component: defineAsyncComponent(() => import('@components/settings/SettingLicense.vue')),
+    icon: RiShieldStarLine
   },
   {
     name: 'Bảo Mật',
@@ -97,7 +105,10 @@ const activeTab = shallowRef(tabs.value[1])
 ._tab-area {
   max-height: calc(100vh - 24px - 28px - 20px - 20px);
   ._tab-content {
-    @apply bg-slate-800 rounded-lg px-4 py-4;
+    @apply rounded-lg;
+    & > div {
+      @apply bg-slate-800 rounded-lg px-4 py-4;
+    }
   }
 }
 
@@ -121,11 +132,11 @@ const activeTab = shallowRef(tabs.value[1])
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: all 300ms;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+  @apply opacity-0 scale-[0.98];
 }
 </style>

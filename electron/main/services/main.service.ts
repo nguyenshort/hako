@@ -10,6 +10,7 @@ import path from "path";
 import {homedir} from "os";
 import {AppDocument} from "@entities/app.entity";
 import {CreateAppInput} from "@dtos/app.dto";
+import {UserService} from "./user.service";
 
 /**
  * @link https://www.electronjs.org/docs/latest/tutorial/devtools-extension
@@ -35,6 +36,7 @@ export class MainService {
     apps: AppDocument[] = []
 
     constructor(
+        @inject(DatabaseService.key) readonly userService: UserService,
         @inject(DatabaseService.key) readonly databaseService: DatabaseService
     ) {}
 

@@ -2,7 +2,9 @@ import {injectable} from "inversify"
 
 import Datastore from '@seald-io/nedb'
 import type Nedb from "@seald-io/nedb"
-import {AppDocument, IAppInput} from "../../../src/entities/app.entity";
+import {AppDocument} from "@entities/app.entity";
+import {CreateAppInput} from "@dtos/app.dto";
+import {UserDocument} from "../../../src/entities/user.entity";
 
 @injectable()
 export class DatabaseService {
@@ -30,7 +32,7 @@ export class DatabaseService {
             .sort({order: 1})
     }
 
-    async createApp(input: IAppInput) {
+    async createApp(input: CreateAppInput) {
         return this.app.insertAsync(input)
     }
 
@@ -45,6 +47,23 @@ export class DatabaseService {
     async updateApp(query: any, update: Record<any, any>) {
         return await this.app.updateAsync(query, {
             $set: update
+        }, { returnUpdatedDocs: true })
+    }
+
+    /**
+     * User Query
+     */
+    async getUser() {
+        return this.user.findOneAsync({})
+    }
+
+    async createUser(user: Partial<UserDocument>) {
+        return this.user.insertAsync(user)
+    }
+
+    async updateUser(user: Partial<UserDocument>) {
+        return this.user.updateAsync({}, {
+            $set: user
         }, { returnUpdatedDocs: true })
     }
 }
