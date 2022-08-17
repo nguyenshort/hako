@@ -3,12 +3,13 @@ import {app as electronApp, BrowserView} from "electron"
 import {join} from "path"
 import consola from 'consola'
 import {ROOT_PATH} from "../index";
-import {AppDocument, IAppInput} from "../../../src/entities/app.entity";
 import {DatabaseService} from "./database.service";
 import {useAppView} from "../composables/view";
 import {useAllowedRoutes, useBaseURL, useMainWindow, useWebPrefs} from "../composables/browser"
 import path from "path";
 import {homedir} from "os";
+import {AppDocument} from "@entities/app.entity";
+import {CreateAppInput} from "@dtos/app.dto";
 
 /**
  * @link https://www.electronjs.org/docs/latest/tutorial/devtools-extension
@@ -321,7 +322,7 @@ export class MainService {
      * tạo app vào db và gửi sự kiện cho Vue
      * @param input
      */
-    async createApp(input: IAppInput) {
+    async createApp(input: CreateAppInput) {
         this.logger.info("Creating app...", input.name)
         const app = await this.databaseService.createApp(input) as AppDocument
 

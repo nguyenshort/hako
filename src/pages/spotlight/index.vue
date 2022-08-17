@@ -46,7 +46,7 @@
               v-for="item in appsQuickLook"
               :key="item._id"
               class="w-[110px] flex flex-col items-center justify-center relative z-10 mb-4 cursor-pointer"
-              @click="onClickApp(item)"
+              @click="appBridge.pushRoute(item._id)"
           >
             <div class="h-[60px] flex items-center justify-center relative z-10">
               <img
@@ -138,10 +138,6 @@ const editSpotlight = () => {
 
 const form = ref<HTMLDivElement>()
 onClickOutside(form, () => editSpotlight())
-
-const onClickApp = (app: AppDocument) => {
-  useAppBridge().pushRoute(app._id)
-}
 
 onMounted(()=> {
   appBridge.addEventListener('apps:change', (_apps: AppDocument[]) => {

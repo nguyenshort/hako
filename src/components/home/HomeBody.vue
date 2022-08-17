@@ -1,20 +1,19 @@
 <template>
   <div
-      class="px-5 pb-4"
+      id="home-body"
+      class="px-4 pb-5"
       :class="{
-        'pt-7': !workspaceStore.hasApp,
-        'pt-4': workspaceStore.hasApp
+        'pt-5': workspaceStore.hasApp,
+        'pt-8': !workspaceStore.hasApp
       }"
   >
+    <page-title
+        title="Ứng Dụng Của Tôi"
+        class="pb-5"
+    >
+    </page-title>
 
-    <export-data>
-      <div class="flex items-center">
-        <input type="checkbox" />
-        <span class="text-[13px] ml-2">Show app links</span>
-      </div>
-    </export-data>
-
-    <div class="relative mt-3">
+    <div class="relative">
 
       <svg class="absolute top-1/2 left-4 -translate-x-1/2 transition -translate-y-1/2 text-primary-600 dark:text-current" width="16" height="16" viewBox="0 0 20 20">
         <path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -27,7 +26,7 @@
       />
     </div>
 
-    <list-apps class="mt-4" />
+    <list-apps class="mt-4 -mx-2" />
 
     <div class="fixed bottom-0 left-0 right-0">
       <div class="flex justify-end">
@@ -41,13 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import ListApps from "../ListApps.vue"
-import {useMainStore} from "@store/workspace";
-import ExportData from "@components/ExportData.vue"
-
 const workspaceStore = useMainStore()
-
-
 </script>
 <script lang="ts">
 import {defineComponent} from "vue"

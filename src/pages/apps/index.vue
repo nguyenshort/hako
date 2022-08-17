@@ -35,6 +35,7 @@
             class="w-[110px] app-item"
             :data-id="element._id"
             @contextmenu.prevent="showWsOptions(element)"
+            @click="appBridge.pushRoute(element._id)"
         >
 
           <div class="relative _body">

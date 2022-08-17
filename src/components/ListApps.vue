@@ -53,13 +53,10 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, reactive} from "vue";
-import {useWindowSize} from "@vueuse/core";
-import {IAppInput} from "../entities/app.entity";
-import {useAppBridge} from "../composable/useAppBridge";
+import {AppDocument} from "@entities/app.entity";
 
 const appBridge = useAppBridge()
-const apps = reactive<IAppInput[]>([
+const apps = reactive<AppDocument[]>([
   {
     name: "Google",
     icon: "/images/google.png",
@@ -90,9 +87,9 @@ const apps = reactive<IAppInput[]>([
     icon: "/images/tiktok.png",
     url: "https://tiktok.com"
   }
-])
+] as AppDocument[])
 
-const addHandle = async (app: IAppInput) => {
+const addHandle = async (app: AppDocument) => {
   try {
     await appBridge.createApp(Object.assign({}, app))
   } catch (e) {
