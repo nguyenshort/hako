@@ -1,5 +1,5 @@
 import {ipcMain, Notification} from "electron";
-import {useMainServie} from "../composables/instance"
+import {useMainServie, useUserServie} from "../composables/instance"
 import {appEventsRegister} from "./app.event";
 import {userEventsRegister} from "./user.event";
 
@@ -9,7 +9,10 @@ export const eventsRegister = () => {
     ipcMain.once('app:mounted', async () => {
         console.log('app:mounted')
         const mainService = useMainServie()
-        await mainService.initApps()
+        const userService = useUserServie()
+        if(!userService.user?.lazyApp) {
+            await mainService.initApps()
+        }
     })
 
     /**
