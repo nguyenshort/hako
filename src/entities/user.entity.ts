@@ -5,4 +5,6 @@ export interface UserDocument {
     theme?: 'auto' | 'light' | 'dark' | string
     lazyApp?: boolean
     language?: string
+    autoStart?: boolean
+    autoFreeze?: boolean
 }

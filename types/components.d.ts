@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
     AppsQuickLook: typeof import('./../src/components/spotlight/AppsQuickLook.vue')['default']
+    ASwitch: typeof import('ant-design-vue/es')['Switch']
     Draggable: typeof import('vuedraggable')['default']
     ExportData: typeof import('./../src/components/ExportData.vue')['default']
     HelloWorld: typeof import('./../src/components/HelloWorld.vue')['default']
