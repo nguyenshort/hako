@@ -9,6 +9,7 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import animejs from "@plugins/animejs";
 import bridge from "@plugins/bridge"
+import i18n from "@plugins/i18n";
 
 const pinia = createPinia()
 
@@ -21,6 +22,7 @@ app.use(router)
 app.use(VueMitter)
 app.use(VueLottie)
 app.use(pinia)
+app.use(i18n)
 
 app.mount('#app')
 

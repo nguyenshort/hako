@@ -1,19 +1,23 @@
 import {defineConfig, loadEnv, UserConfig} from 'vite'
 import { rmSync } from 'fs'
+import { resolve, dirname } from 'node:path'
+import { fileURLToPath } from 'url'
+import path, {join} from 'path'
+
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import AutoImport from 'unplugin-auto-import/vite'
-import path, {join} from 'path'
+import electron from "vite-plugin-electron";
+import {AntDesignVueResolver} from "unplugin-vue-components/resolvers"
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import Inspect from 'vite-plugin-inspect'
 
 
 // @ts-ignore
 import EnvGenerator from './src/plugins/vite/env'
-import electron from "vite-plugin-electron";
-import {AntDesignVueResolver} from "unplugin-vue-components/resolvers";
 
 rmSync('dist', { recursive: true, force: true }) // v14.14.0
 
@@ -25,6 +29,11 @@ export default ({ mode }) => {
    * @link https://vitejs.dev/config/
    */
   return defineConfig({
+    define: {
+      __VUE_I18N_FULL_INSTALL__: true,
+      __VUE_I18N_LEGACY_API__: true,
+      __INTLIFY_PROD_DEVTOOLS__: true,
+    },
     build: {
       sourcemap: true,
     },
@@ -75,6 +84,7 @@ export default ({ mode }) => {
           '@vueuse/core',
           'vue',
           'vue-router',
+          'vue-i18n',
           {
             '@vue/apollo-composable': [
               'useSubscription'
@@ -115,6 +125,11 @@ export default ({ mode }) => {
       }),
       Icons({
         autoInstall: true
+      }),
+      VueI18nPlugin({
+        runtimeOnly: true,
+        compositionOnly: true,
+        include: resolve(dirname(fileURLToPath(import.meta.url)), './src/locales/**'),
       }),
       tsconfigPaths({
         loose: true

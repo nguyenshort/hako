@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <setting-block title="Ngôn Ngữ">
       <div class="langs">
         <button
@@ -112,7 +111,6 @@
         />
       </div>
     </setting-block>
-
   </div>
 </template>
 
